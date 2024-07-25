@@ -1,6 +1,7 @@
 export default class Projects {
 
-  constructor(todoItemList) {
+  constructor(title, todoItemList) {
+    this.title = title
     this.todoItemList = todoItemList;
   }
 
@@ -9,7 +10,13 @@ export default class Projects {
   }
   
   get() {
+    return this.todoItemList;
     
   }
+  
+  getTitle() {
+    return this.title;
+  }
+  
 }
 

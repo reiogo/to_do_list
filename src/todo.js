@@ -1,17 +1,18 @@
 export default class Todo {
 
-  constructor(title, description, duedate, priority) {
+  constructor(title, description, duedate, priority, complete) {
 
     this.title = title;
     this.description = description;
     this.duedate = duedate;
     this.priority = priority;
+    this.complete = complete
 
   }
 
   get() {
 
-    todoPackage = {this.title, this.description, this.duedate, this.priority};
+    const todoPackage = {title: this.title, description: this.description, duedate: this.duedate, priority: this.priority, complete: this.complete};
     
     return todoPackage;
     
@@ -32,6 +33,11 @@ export default class Todo {
   setPriority(newInfo) {
     this.priority = newInfo;
   }
+
+  setIsComplete(newInfo) {
+    this.priority = newInfo;
+  }
+  
   
 }
 
