@@ -2,6 +2,15 @@ export function startUp() {
 
   document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100vh/ 1fr 3fr"
 
+  const projContainer = document.createElement("div");
+  projContainer.id = "proj-container";
+
+  const todoContainer = document.createElement("div");
+  todoContainer.id = "todo-container";
+
+  document.body.appendChild(projContainer);
+  document.body.appendChild(todoContainer);
+
 
   const projDiv = document.createElement("div");
   projDiv.id = "proj-div";
@@ -12,8 +21,8 @@ export function startUp() {
   todoDiv.style = "padding-right: 35px;";
 
 
-  document.body.appendChild(projDiv);
-  document.body.appendChild(todoDiv);
+  projContainer.appendChild(projDiv);
+  todoContainer.appendChild(todoDiv);
 
   
   const projHeader = document.createElement("h2");
@@ -51,22 +60,61 @@ export function populateTodoList (project) {
   const todoList = document.createElement("ul");
 
   for (let i = 0; i < project.length; i++) {
-
     const todoListItem = document.createElement("li");
-    const todoButton = document.createElement("button");
-    todoButton.textContent = project[i].get().title;
-    todoButton.id = `${i}`; 
-    todoButton.style = "border: none; font-size: 1.5rem";
     todoListItem.style = "list-style-type: none;";
-    todoListItem.appendChild(todoButton);
+
+    todoItemTitle(todoListItem, project, i);
+    todoItemCard(todoListItem, project, i);
+
     todoList.appendChild(todoListItem);
     
   }
-
   listDiv.appendChild(todoList);
-  
+
+}
+
+
+function todoItemTitle (currentListItem, project, i) {
+
+  const todoButton = document.createElement("button");
+  todoButton.textContent = project[i].get().title;
+  todoButton.id = "item-title"; 
+  todoButton.style =
+    "border: none; font-size: 1.5rem";
+
+  currentListItem.appendChild(todoButton);
   
 }
 
-addExpandFeature
+
+function todoItemCard (currentListItem, project, i) {
+
+  const todoCard = document.createElement("div");
+  const todoCardTitle = document.createElement("p");
+  todoCardTitle.textContent = project[i].get().title;
+  todoCard.appendChild(todoCardTitle);
+  currentListItem.appendChild(todoCard);
+  
+}
+
+
+function addEvents() {
+  
+  projDiv = document.querySelector("#proj-container");
+  todoDiv = document.querySelector("#todo-container");
+  // projDiv.addEventListener("click", );
+    
+
+}
+
+
+function expand(event) {
+  
+  
+  event.target.remove()
+  
+  
+
+
+}
 
