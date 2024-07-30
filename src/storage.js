@@ -4,7 +4,7 @@ export function addToStorage(project) {
 
   const storageKey = project.getTitle();
   const storageValue = 
-    [JSON.stringify(project.get()), project.getIndex()];
+    JSON.stringify({content: JSON.stringify(project.get()), index: project.getIndex()});
 
   localStorage.setItem(storageKey, storageValue);
 
@@ -12,10 +12,20 @@ export function addToStorage(project) {
 
 export function getFromStorage(project) {
 
-  console.log(JSON.parse(localStorage.getItem(project)));
   return JSON.parse(localStorage.getItem(project))
   
 }
+
+export function getTitleFromStorage(project) {
+
+  console.log(localStorage.getItem(project.getTitle()));
+  const projObject = JSON.parse(localStorage.getItem(project.getTitle()));
+
+  console.log( projObject );
+
+  
+}
+
 
 
 

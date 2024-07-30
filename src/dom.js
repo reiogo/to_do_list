@@ -109,7 +109,7 @@ export function populateTodoList (project) {
     const todoListItem = document.createElement("li");
     todoListItem.style = "list-style-type: none;";
 
-    makeTodoItemTitle(project.getTitle(), i, todoListItem);
+    makeTodoItemTitle(project, i, todoListItem);
 
     todoList.appendChild(todoListItem);
     
@@ -120,11 +120,11 @@ export function populateTodoList (project) {
 }
 
 
-function makeTodoItemTitle (key, index, currentListItem) {
+function makeTodoItemTitle (project, index, currentListItem) {
 
   const todoButton = document.createElement("button");
-  todoButton.textContent = getTitleFromStorage();
-  todoButton.textContent = JSON.parse(localStorage.getItem(key))[0][index].title;
+  todoButton.textContent = getTitleFromStorage(project);
+  // todoButton.textContent = JSON.parse(localStorage.getItem(key))[0][index].title;
   todoButton.id = `${index}`; 
   todoButton.class = "todo-item-title"; 
   todoButton.style =
