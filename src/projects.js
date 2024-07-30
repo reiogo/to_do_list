@@ -1,9 +1,12 @@
-export default class Projects {
+import {addToStorage, getFromStorage} from './storage';
 
-  constructor(title, todoItemList) {
+export class Projects {
 
-    this.title = title
+  constructor(title, todoItemList, index) {
+
+    this.title = title;
     this.todoItemList = todoItemList;
+    this.index = index;
 
   }
 
@@ -30,7 +33,47 @@ export default class Projects {
 
     return this.todoItemList.length;
 
-    
   }
+
+  getIndex() {
+    return this.index;
+  }
+
+  setIndex(index) {
+    this.index = index;
+  }
+  
+  
+}
+
+
+export function createNewProject (projTitle, i) {
+
+  if (projTitle == "") {
+
+    return;
+
+  }
+
+  const newProject = new Projects(projTitle, [], i);
+  addToStorage(newProject);
+
+  const projArray = [];
+
+  for (const [key, value] of Object.entries(localStorage)) {
+    let objIndex = value[value.length - 1];
+    
+    let project = new Projects(key, value, objIndex);
+    projArray.push (project);
+
+  }
+
+  // projArray.sort(function(a, b) {
+  //   return a.index - b.index;
+  // });
+    console.log(projArray);
+  
+  return projArray;
+
 }
 

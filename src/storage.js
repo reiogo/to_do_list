@@ -1,6 +1,12 @@
-export function addToStorage (number, project) {
+// FIX THE GET STORAGE FUNCTION
+//
+export function addToStorage(project) {
 
-  localStorage.setItem(number, JSON.stringify(project))
+  const storageKey = project.getTitle();
+  const storageValue = 
+    [JSON.stringify(project.get()), project.getIndex()];
+
+  localStorage.setItem(storageKey, storageValue);
 
 }
 
