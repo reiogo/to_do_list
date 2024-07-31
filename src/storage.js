@@ -1,5 +1,7 @@
 // FIX THE GET STORAGE FUNCTION
 //
+import {Project, createNewProject} from './projects';
+
 export function addToStorage(project) {
 
   const storageKey = project.getTitle();
@@ -10,23 +12,37 @@ export function addToStorage(project) {
 
 }
 
-export function getFromStorage(project) {
-
-  return JSON.parse(localStorage.getItem(project))
+export function getFromStorage(key) {
+  
+  const storageContent = JSON.parse(localStorage.getItem(key));
+  const project = new Project(key, JSON.parse(storageContent.content), JSON.parse(storageContent.index));
+  return project;
   
 }
 
 export function getTitleFromStorage(project) {
 
-  console.log(localStorage.getItem(project.getTitle()));
   const projObject = JSON.parse(localStorage.getItem(project.getTitle()));
 
-  console.log( projObject );
+  // console.log( project );
+  // console.log(localStorage.getItem(project.getTitle()));
+  // console.log( projObject );
 
+}
+
+export function getContentFromStorage(key) {
+  
+  const storageContent = JSON.parse(localStorage.getItem(key));
+  return storageContent.index;
   
 }
 
-
+export function getIndexFromStorage(key) {
+  
+  const storageContent = JSON.parse(localStorage.getItem(key));
+  return storageContent.index;
+  
+}
 
 
 // Returns false if nothing is there, returns all projects from localStorage otherwise.

@@ -1,6 +1,10 @@
 import Todo from './todo';
-import {Projects, createNewProject} from './projects';
-import {addToStorage, getFromStorage} from './storage';
+import {Project, createNewProject} from './projects';
+import {addToStorage, 
+  getFromStorage,
+  getTitleFromStorage,
+  getContentFromStorage,
+  getIndexFromStorage} from './storage';
 import {
   startUp, 
   populateProjects, 

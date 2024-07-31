@@ -1,11 +1,16 @@
-import {addToStorage, getFromStorage} from './storage';
+import {addToStorage, 
+  getFromStorage,
+  getTitleFromStorage,
+  getContentFromStorage,
+  getIndexFromStorage} from './storage';
+import Todo from './todo';
 
-export class Projects {
+export class Project {
 
   constructor(title, todoItemList, index) {
 
     this.title = title;
-    this.todoItemList = todoItemList;
+    this.todoItemList = new Todo(todoItemList);
     this.index = index;
 
   }
@@ -43,7 +48,23 @@ export class Projects {
     this.index = index;
   }
   
-  
+  getByIndex(index) {
+
+    let todoItem = {};
+
+    for(let i = 0; i < this.todoItemList.length; i++) {
+
+      if(index == this.todoItemList[i].getIndex()) {
+
+        todoItem = this.todoItemList[i];
+
+      } 
+
+    }
+
+    return todoItem;
+
+  }
 }
 
 

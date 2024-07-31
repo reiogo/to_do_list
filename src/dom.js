@@ -1,6 +1,11 @@
-import {Projects, createNewProject} from './projects';
+import {Project,
+  createNewProject} from './projects';
 import Todo from './todo';
-import {addToStorage, getFromStorage, getTitleFromStorage} from './storage';
+import {addToStorage, 
+  getFromStorage,
+  getTitleFromStorage,
+  getContentFromStorage,
+  getIndexFromStorage} from './storage';
 
 export function startUp(startUpProjects) {
 
@@ -40,18 +45,16 @@ export function startUp(startUpProjects) {
   addEvents();
   
   
-    const defaultTodo = new Todo("Example Todo Item", "Example Description", "14-06-21", "red", "false");
-    const defaultTodo2 = new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false");
-    const defaultProj = new Projects("Default Project",[defaultTodo, defaultTodo2], 0);
-    const defaultProj2 = new Projects("Default Project2",[defaultTodo, defaultTodo2], 1);
+    const defaultTodo = new Todo("Example Todo Item", "Example Description", "14-06-21", "red", "false", "0");
+    const defaultTodo2 = new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
+    const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
+    const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo2], 1);
 
     addToStorage(defaultProj);
     addToStorage(defaultProj2);
 
     populateProjects([defaultProj, defaultProj2]);
     populateTodoList(defaultProj);
-
-
 
 }
 
@@ -109,7 +112,7 @@ export function populateTodoList (project) {
     const todoListItem = document.createElement("li");
     todoListItem.style = "list-style-type: none;";
 
-    makeTodoItemTitle(project, i, todoListItem);
+    makeTodoItemTitle(project.getByIndex(i), todoListItem);
 
     todoList.appendChild(todoListItem);
     
@@ -120,12 +123,13 @@ export function populateTodoList (project) {
 }
 
 
-function makeTodoItemTitle (project, index, currentListItem) {
+function makeTodoItemTitle (todoItem, currentListItem) {
 
+  const index = todoItem.getIndex();
   const todoButton = document.createElement("button");
-  todoButton.textContent = getTitleFromStorage(project);
-  // todoButton.textContent = JSON.parse(localStorage.getItem(key))[0][index].title;
-  todoButton.id = `${index}`; 
+
+  todoButton.textContent = todoItem.getTitle();
+  todoButton.id = index; 
   todoButton.class = "todo-item-title"; 
   todoButton.style =
     "border: none; font-size: 1.5rem";
@@ -135,13 +139,13 @@ function makeTodoItemTitle (project, index, currentListItem) {
 }
 
 
-function makeTodoItemCard (key, index, currentListItem) {
+function makeTodoItemCard (project, currentListItem) {
 
   const todoCard = document.createElement("div");
   todoCard.class = "todo-card";
-  todoCard.id = `${index}`;
+  todoCard.id = project.getIndex();
 
-  const item = JSON.parse(localStorage.getItem(key))[0][index];
+  const item = project.get();
 
   const todoCardTitle = document.createElement("p");
   todoCardTitle.textContent = item.title;
@@ -190,37 +194,40 @@ function addEvents() {
 function expandItem(event) {
   
   const key = document.querySelector("#todo-header").textContent;
+  
+  const project = getFromStorage(key);
+
   let index = event.target.id;
+
+  const item = project.getByIndex(index);
 
   if(event.target.class == "todo-item-title") {
 
-    makeTodoItemCard(key, index, event.target.parentNode);
+    makeTodoItemCard(project, event.target.parentNode);
     event.target.remove();
     
   } else if (event.target.class == "todo-card") {
 
-    makeTodoItemTitle(key, index, event.target.parentNode);
+    makeTodoItemTitle(item, event.target.parentNode);
     event.target.remove();
     
   } else if (event.target.class = "todo-element") {
     index = event.target.parentNode.id;
 
-    makeTodoItemTitle(key, index, event.target.parentNode.parentNode);
+    makeTodoItemTitle(project, event.target.parentNode.parentNode);
     event.target.parentNode.remove();
 
     
   }
 }
-//fix projects
 function expandProject (event) {
 
   if (event.target.class == "project-expand") {
 
     const todoList = document.querySelector("#todo-div");
-    const key = event.target.id
+    const key = event.target.id;
 
-    const project = new Projects (`${key}`,
-      JSON.parse(localStorage.getItem(key))[0]);
+    const project = new Project (key, getContentFromStorage(key), getIndexFromStorage(key));
 
     while (todoList.hasChildNodes()) {
 
