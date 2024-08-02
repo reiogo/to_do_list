@@ -1,4 +1,4 @@
-export default class Todo {
+export class Todo {
 
   constructor(title, description, duedate, priority, complete, todoIndex) {
 
@@ -33,6 +33,27 @@ export default class Todo {
     return this.title;
 
   }
+
+}
+
+// Takes an array of objects and returns array of todo items.
+export function unwrapAndMakeTodo (todoItemList) {
   
+  let array = [];
+
+  for (let i = 0; i < todoItemList.length; i++) {
+
+    let item = new Todo(todoItemList[i].title, 
+                        todoItemList[i].description, 
+                        todoItemList[i].duedate,
+                        todoItemList[i].priority,      
+                        todoItemList[i].complete,
+                        todoItemList[i].todoIndex); 
+    array.push(item)
+
+  }
+
+  return array;
+
 }
 

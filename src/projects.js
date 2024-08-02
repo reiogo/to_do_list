@@ -2,15 +2,17 @@ import {addToStorage,
   getFromStorage,
   getTitleFromStorage,
   getContentFromStorage,
-  getIndexFromStorage} from './storage';
-import Todo from './todo';
+  getIndexFromStorage,
+  getProjectsFromStorage
+} from './storage';
+import {Todo, unwrapAndMakeTodo} from './todo';
 
 export class Project {
 
   constructor(title, todoItemList, index) {
 
     this.title = title;
-    this.todoItemList = new Todo(todoItemList);
+    this.todoItemList = todoItemList;
     this.index = index;
 
   }
@@ -54,6 +56,7 @@ export class Project {
 
     for(let i = 0; i < this.todoItemList.length; i++) {
 
+      // console.log(this.todoItemList);
       if(index == this.todoItemList[i].getIndex()) {
 
         todoItem = this.todoItemList[i];
@@ -65,6 +68,7 @@ export class Project {
     return todoItem;
 
   }
+
 }
 
 
@@ -76,25 +80,11 @@ export function createNewProject (projTitle, i) {
 
   }
 
-  const newProject = new Projects(projTitle, [], i);
+  const newProject = new Project(projTitle, [], i);
   addToStorage(newProject);
 
-  const projArray = [];
-
-  for (const [key, value] of Object.entries(localStorage)) {
-    let objIndex = value[value.length - 1];
-    
-    let project = new Projects(key, value, objIndex);
-    projArray.push (project);
-
-  }
-
-  // projArray.sort(function(a, b) {
-  //   return a.index - b.index;
-  // });
-    console.log(projArray);
   
-  return projArray;
+  return newProject;
 
 }
 

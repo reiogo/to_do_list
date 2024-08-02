@@ -1,6 +1,11 @@
-// FIX THE GET STORAGE FUNCTION
-//
+import {Todo, unwrapAndMakeTodo} from './todo';
 import {Project, createNewProject} from './projects';
+
+function createTodo (project) {
+
+  
+  
+}
 
 export function addToStorage(project) {
 
@@ -15,7 +20,12 @@ export function addToStorage(project) {
 export function getFromStorage(key) {
   
   const storageContent = JSON.parse(localStorage.getItem(key));
-  const project = new Project(key, JSON.parse(storageContent.content), JSON.parse(storageContent.index));
+  const items = JSON.parse(storageContent.content);
+
+  
+  const todoItems = unwrapAndMakeTodo(items);
+
+  const project = new Project(key, todoItems, JSON.parse(storageContent.index));
   return project;
   
 }
@@ -24,16 +34,19 @@ export function getTitleFromStorage(project) {
 
   const projObject = JSON.parse(localStorage.getItem(project.getTitle()));
 
-  // console.log( project );
-  // console.log(localStorage.getItem(project.getTitle()));
-  // console.log( projObject );
+  console.log("fix this?");
+  return projObject.title;
 
 }
 
 export function getContentFromStorage(key) {
   
   const storageContent = JSON.parse(localStorage.getItem(key));
-  return storageContent.index;
+  const items = JSON.parse(storageContent.content);
+  
+  const todoItems = unwrapAndMakeTodo(items);
+
+  return todoItems;
   
 }
 
@@ -45,27 +58,26 @@ export function getIndexFromStorage(key) {
 }
 
 
-// Returns false if nothing is there, returns all projects from localStorage otherwise.
-// Projects need to be stored in 0-n order for the iterator to work.
-export function storageOnStartup() {
-
+export function getProjectsFromStorage () {
+  
   let returnArray = []
 
-  if (localStorage.length == 0) {
-    console.log('hello');
-    return false
-  } else {
+  for (let i = 0; i < localStorage.length; i++) {
 
-    for (let i = 0; i< localStorage.length; i++) {
-      returnArray.push(
-        JSON.parse(localStorage.getItem(i))
-      );
+    for(let [key, value] of Object.entries(localStorage))  {
+
+      const item = (JSON.parse(value));
+
+      if(item.index == i) {
+
+        const project = getFromStorage(key);
+        returnArray.push(project);
+
+        break;
+      }
+    }
   }
+
     return returnArray;
-
-  }
+  
 }
-
-
-
- 

@@ -1,11 +1,13 @@
 import {Project,
   createNewProject} from './projects';
-import Todo from './todo';
+import {Todo, unwrapAndMakeTodo} from './todo';
 import {addToStorage, 
   getFromStorage,
   getTitleFromStorage,
   getContentFromStorage,
-  getIndexFromStorage} from './storage';
+  getIndexFromStorage,
+  getProjectsFromStorage
+} from './storage';
 
 export function startUp(startUpProjects) {
 
@@ -46,14 +48,16 @@ export function startUp(startUpProjects) {
   
   
     const defaultTodo = new Todo("Example Todo Item", "Example Description", "14-06-21", "red", "false", "0");
-    const defaultTodo2 = new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
+    const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
+    const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
     const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
-    const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo2], 1);
+    const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo3], 1);
 
     addToStorage(defaultProj);
     addToStorage(defaultProj2);
 
     populateProjects([defaultProj, defaultProj2]);
+    // console.log(defaultProj);
     populateTodoList(defaultProj);
 
 }
@@ -195,15 +199,17 @@ function expandItem(event) {
   
   const key = document.querySelector("#todo-header").textContent;
   
+  console.log('expand', key);
   const project = getFromStorage(key);
 
   let index = event.target.id;
 
-  const item = project.getByIndex(index);
+  let item = project.getByIndex(index);
 
   if(event.target.class == "todo-item-title") {
 
-    makeTodoItemCard(project, event.target.parentNode);
+
+    makeTodoItemCard(item, event.target.parentNode);
     event.target.remove();
     
   } else if (event.target.class == "todo-card") {
@@ -214,7 +220,8 @@ function expandItem(event) {
   } else if (event.target.class = "todo-element") {
     index = event.target.parentNode.id;
 
-    makeTodoItemTitle(project, event.target.parentNode.parentNode);
+    let item = project.getByIndex(index);
+    makeTodoItemTitle(item, event.target.parentNode.parentNode);
     event.target.parentNode.remove();
 
     
@@ -294,15 +301,17 @@ function onClickProjInputSubmit(event) {
   const projInput = document.querySelector("#proj-input");
   const projList = document.querySelector("#proj-list");
 
-  if (projList.hasChildNodes) {
+  let index = 0;
 
-    let index = projList.children.length + 1;   
+  if (projList.hasChildNodes()) {
+
+    index = projList.children.length;   
     
-  } else {
-    let index = 0;
   }
 
-  populateProjects(createNewProject(projInput.value, index));
+  const newProj = createNewProject(projInput.value, index);
+
+  populateProjects(getProjectsFromStorage());
 
   const projForm = document.querySelector("form");
   projForm.remove();
