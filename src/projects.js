@@ -14,26 +14,57 @@ export class Project {
     this.title = title;
     this.todoItemList = todoItemList;
     this.index = index;
+    this.hashSet = {};
 
+    for(let i = 0; i < this.todoItemList.length; i++) {
+
+      this.hashSet[`${this.todoItemList[i].getIndex()}`] =
+        this.todoItemList[i];
+    }
   }
+
+
+  resetHashSet() {
+    
+    for(let i = 0; i < this.todoItemList.length; i++) {
+
+      this.hashSet[`${this.todoItemList[i].getIndex()}`] =
+        this.todoItemList[i];
+
+    }
+  }
+  
 
 
   addToItems(todoItem) {
 
     this.todoItemList.push(todoItem);
     addToStorage(this);
+    this.resetHashSet();
 
   }
 
-  removeItem(project, todoIndex) {
 
+  removeItem(todoIndex) {
+
+    let newArray = [];
+
+    for(let i = 0; i < this.todoItemList.length; i++) {
+
+      if(todoIndex == this.todoItemList[i].getIndex()) continue;
+
+      newArray.push(this.todoItemList[i]);
+
+    }
+
+    this.todoItemList = newArray;
+    addToStorage(this);
 
     
   }
   
-  
 
-  get() {
+  getTodos() {
 
     return this.todoItemList;
     
@@ -44,19 +75,38 @@ export class Project {
     return this.title;
   }
 
+
   getLength() {
 
     return this.todoItemList.length;
 
   }
 
+
   getIndex() {
     return this.index;
   }
 
+
   setIndex(index) {
     this.index = index;
   }
+
+
+  indexExists(index) {
+
+    if (index in this.hashSet) {
+
+      return true;
+      
+    } else {
+      
+      return false;
+      
+    }
+  }
+
+  
   
   getByIndex(index) {
 
@@ -64,7 +114,6 @@ export class Project {
 
     for(let i = 0; i < this.todoItemList.length; i++) {
 
-      // console.log(this.todoItemList);
       if(index == this.todoItemList[i].getIndex()) {
 
         todoItem = this.todoItemList[i];

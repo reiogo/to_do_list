@@ -151,18 +151,40 @@ export function populateTodoList (project) {
   
   todoHeader.textContent = `${project.getTitle()}`;
   todoHeader.id = "todo-header";
+  let count = project.getLength();
 
-  for (let i = 0; i < project.getLength(); i++) {
-    const todoListItem = document.createElement("li");
-    todoListItem.style = "list-style-type: none;";
+  let i = 0;
 
-    makeTodoItemTitle(project.getByIndex(i), todoListItem);
+  while (count > 0) {
 
-    todoList.appendChild(todoListItem);
+    if(project.indexExists(i)) {
+
+      const listItem = document.createElement("li");
+      listItem.style = "list-style-type: none;";
+
+      makeTodoItemTitle(project.getByIndex(i), listItem);
+
+      todoList.appendChild(listItem);
+
+      console.log('i:',i);
+      console.log(`hello: ${i}`);
+      count--;
+      console.log("count: ",count);
+
+    }
+    i++
+    if (i > 500) {
+      console.log("failure");
+      alert("over 500");
+      break;
+    }
     
   }
+
   todoDiv.appendChild(todoHeader);
   todoDiv.appendChild(todoList);
+
+
 
 }
 
@@ -170,9 +192,11 @@ export function populateTodoList (project) {
 function makeTodoItemTitle (todoItem, currentListItem) {
 
   const index = todoItem.getIndex();
+
   const todoDeleter = document.createElement("button");
-  todoDeleter.style = "height: 1rem; margin: 4px;";
+  todoDeleter.style = "height: 1rem; margin: 4px; border-radius: 50%;";
   todoDeleter.class = "todo-deleter";
+  todoDeleter.value = index;
   const todoButton = document.createElement("button");
 
   todoButton.textContent = todoItem.getTitle();
@@ -187,13 +211,20 @@ function makeTodoItemTitle (todoItem, currentListItem) {
 }
 
 
-function makeTodoItemCard (project, currentListItem) {
+function makeTodoItemCard (todoItem, currentListItem) {
+
+  const index = todoItem.getIndex();
+
+  const todoDeleter = document.createElement("button");
+  todoDeleter.style = "height: 1rem; margin: 4px;";
+  todoDeleter.class = "todo-deleter";
+  todoDeleter.value = index;
 
   const todoCard = document.createElement("div");
   todoCard.class = "todo-card";
-  todoCard.id = project.getIndex();
+  todoCard.id = index;
 
-  const item = project.get();
+  const item = todoItem.get();
 
   const todoCardTitle = document.createElement("p");
   todoCardTitle.textContent = item.title;
@@ -215,6 +246,7 @@ function makeTodoItemCard (project, currentListItem) {
   todoCardComplete.textContent = item.complete;
   todoCardComplete.class = "todo-element";
 
+  currentListItem.appendChild(todoDeleter);
   currentListItem.appendChild(todoCard);
 
   todoCard.appendChild(todoCardTitle);
@@ -239,48 +271,6 @@ function addEvents() {
 
 }
 
-
-function todoOnClick(event) {
-  
-  const key = document.querySelector("#todo-header").textContent;
-  
-  const project = getFromStorage(key);
-
-  let index = event.target.id;
-
-  let item = project.getByIndex(index);
-
-  if(event.target.class == "todo-item-title") {
-
-    makeTodoItemCard(item, event.target.parentNode);
-
-    event.target.remove();
-    
-  } else if (event.target.class == "todo-card") {
-
-    makeTodoItemTitle(item, event.target.parentNode);
-
-    event.target.remove();
-    
-  } else if (event.target.class == "todo-element") {
-    
-    index = event.target.parentNode.id;
-    let item = project.getByIndex(index);
-
-    makeTodoItemTitle(item, event.target.parentNode.parentNode);
-
-    event.target.parentNode.remove();
-    
-  } else if (event.target.class == "todo-deleter") {
-
-    deleteTodo(event);
-    
-  } else {
-
-    return;
-
-  }
-}
 function projOnClick(event) {
 
   if (event.target.class == "project-expand") {
@@ -306,6 +296,61 @@ function projOnClick(event) {
 
   }
   
+}
+
+function todoOnClick(event) {
+  
+  const key = document.querySelector("#todo-header").textContent;
+  const project = getFromStorage(key);
+  let index = event.target.id;
+  let item = project.getByIndex(index);
+  let listItem = event.target.parentNode;
+
+  if(event.target.class == "todo-item-title") {
+
+    while (listItem.hasChildNodes()) {
+
+      listItem.removeChild(listItem.firstChild);
+
+    }
+
+    makeTodoItemCard(item, listItem);
+    
+  } else if (event.target.class == "todo-card") {
+
+    while (listItem.hasChildNodes()) {
+
+      listItem.removeChild(listItem.firstChild);
+
+    }
+
+    makeTodoItemTitle(item, listItem);
+
+    
+  } else if (event.target.class == "todo-element") {
+    
+    index = event.target.parentNode.id;
+    item = project.getByIndex(index);
+    listItem = event.target.parentNode.parentNode;
+
+
+    while (listItem.hasChildNodes()) {
+
+      listItem.removeChild(listItem.firstChild);
+
+    }
+
+    makeTodoItemTitle(item, listItem);
+    
+  } else if (event.target.class == "todo-deleter") {
+
+    deleteTodo(event);
+    
+  } else {
+
+    return;
+
+  }
 }
 
 function addButtons () {
@@ -391,7 +436,7 @@ function createTodoForm(event) {
     todoForm.id = ("todo-form");
 
     const todoInputLabel = document.createElement("label");
-    // todoInputLabel.setAttribute("for", "toao-input");
+    todoInputLabel.setAttribute("for", "todo-input");
 
     const todoInput = document.createElement("input");
     todoInput.id = "todo-input";
@@ -453,8 +498,20 @@ function deleteProject (event) {
 }
 
 function deleteTodo (event) {
-  const key = event.target.value;
 
-  
+  const key =
+    document.querySelector("#todo-header").textContent;
+  const project = getFromStorage(key);
+  const index = event.target.value;
+
+  project.removeItem(index);
+
+  const todoListItem =event.target.parentNode;
+  while (todoListItem.hasChildNodes()) {
+
+    todoListItem.removeChild(todoListItem.firstChild);
+
+  }
+
 }
 

@@ -6,7 +6,7 @@ export function addToStorage(project) {
 
   const storageKey = project.getTitle();
   const storageValue = 
-    JSON.stringify({content: JSON.stringify(project.get()), index: project.getIndex()});
+    JSON.stringify({content: JSON.stringify(project.getTodos()), index: project.getIndex()});
 
   localStorage.setItem(storageKey, storageValue);
 
