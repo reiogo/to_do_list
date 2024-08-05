@@ -166,10 +166,7 @@ export function populateTodoList (project) {
 
       todoList.appendChild(listItem);
 
-      console.log('i:',i);
-      console.log(`hello: ${i}`);
       count--;
-      console.log("count: ",count);
 
     }
     i++
@@ -473,7 +470,14 @@ function todoSubmit(event) {
   if (todoList.hasChildNodes()) {
 
     index = todoList.children.length;   
-    
+
+    for (let i = 0; i < project.getLength(); i++) {
+      if (project.getTodos()[i].getIndex() == index) {
+
+      index = todoList.children.length + 1;
+        
+      }
+    }
   }
 
   const newTodo = new Todo(title,"Hello Descript", "14-06-21", "red", "false", index);
