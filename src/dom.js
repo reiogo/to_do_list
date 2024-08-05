@@ -44,23 +44,37 @@ export function startUp(startUpProjects) {
 
 
 
+  
+  
+  const defaultTodo = new Todo("Example Todo Item", "Example Description", "14-06-21", "red", "false", "0");
+  const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
+  const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
+  const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
+  const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo3], 1);
+
+  addToStorage(defaultProj);
+  addToStorage(defaultProj2);
+
+  populateProjects(getProjectsFromStorage());
+
+  setTodoList();
+
   addEvents();
-  
-  
-    const defaultTodo = new Todo("Example Todo Item", "Example Description", "14-06-21", "red", "false", "0");
-    const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
-    const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
-    const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
-    const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo3], 1);
-
-    addToStorage(defaultProj);
-    addToStorage(defaultProj2);
-
-    populateProjects([defaultProj, defaultProj2]);
-    // console.log(defaultProj);
-    populateTodoList(defaultProj);
 
 }
+
+function setTodoList () {
+  
+  if (localStorage.length == 0) {
+    const project = 0;
+    populateTodoList(project);
+    return;
+  }
+  const key = document.querySelector("#proj-list").firstChild.lastChild.id;
+  populateTodoList(getFromStorage(key));
+
+}
+
 
 
 export function populateProjects (listOfProjects) {
@@ -80,6 +94,10 @@ export function populateProjects (listOfProjects) {
   for (let i = 0; i < listOfProjects.length; i++) {
 
     const projListItem = document.createElement("li");
+    const projDeleter = document.createElement("button");
+    projDeleter.style = "height: 1rem; margin: 4px;";
+    projDeleter.class = "proj-deleter";
+    
     const projButton = document.createElement("button");
 
     projButton.textContent =
@@ -92,7 +110,9 @@ export function populateProjects (listOfProjects) {
     const key = listOfProjects[i].getTitle();
     projButton.id = `${key}`;
     projButton.value = `${i}`;
+    projDeleter.value = `${key}`;
 
+    projListItem.appendChild(projDeleter);
     projListItem.appendChild(projButton);
     projList.appendChild(projListItem);
     
@@ -105,9 +125,29 @@ export function populateProjects (listOfProjects) {
 
 export function populateTodoList (project) {
 
+  const prevContent =
+    document.querySelector("#todo-div");
+
+  while (prevContent.hasChildNodes()) {
+
+    prevContent.removeChild(prevContent.firstChild);
+    
+  }
+
+  
   const todoHeader = document.createElement("h2");
   const todoDiv = document.querySelector("#todo-div");
   const todoList = document.createElement("ul");
+  todoList.id = "todo-list";
+
+  if (project == 0) {
+    
+    const todoHeader = document.createElement("h2");
+    todoHeader.textContent = "To do list";
+    todoDiv.appendChild(todoHeader);
+    return;
+
+  }
   
   todoHeader.textContent = `${project.getTitle()}`;
   todoHeader.id = "todo-header";
@@ -130,6 +170,9 @@ export function populateTodoList (project) {
 function makeTodoItemTitle (todoItem, currentListItem) {
 
   const index = todoItem.getIndex();
+  const todoDeleter = document.createElement("button");
+  todoDeleter.style = "height: 1rem; margin: 4px;";
+  todoDeleter.class = "todo-deleter";
   const todoButton = document.createElement("button");
 
   todoButton.textContent = todoItem.getTitle();
@@ -138,6 +181,7 @@ function makeTodoItemTitle (todoItem, currentListItem) {
   todoButton.style =
     "border: none; font-size: 1.5rem";
 
+  currentListItem.appendChild(todoDeleter);
   currentListItem.appendChild(todoButton);
   
 }
@@ -189,17 +233,17 @@ function addEvents() {
   const todoDiv = 
     document.querySelector("#todo-container");
 
-  todoDiv.addEventListener("click", expandItem);
-  projDiv.addEventListener("click", expandProject);
+  todoDiv.addEventListener("click", todoOnClick);
+  projDiv.addEventListener("click", projOnClick);
+
 
 }
 
 
-function expandItem(event) {
+function todoOnClick(event) {
   
   const key = document.querySelector("#todo-header").textContent;
   
-  console.log('expand', key);
   const project = getFromStorage(key);
 
   let index = event.target.id;
@@ -208,26 +252,36 @@ function expandItem(event) {
 
   if(event.target.class == "todo-item-title") {
 
-
     makeTodoItemCard(item, event.target.parentNode);
+
     event.target.remove();
     
   } else if (event.target.class == "todo-card") {
 
     makeTodoItemTitle(item, event.target.parentNode);
+
     event.target.remove();
     
-  } else if (event.target.class = "todo-element") {
-    index = event.target.parentNode.id;
-
-    let item = project.getByIndex(index);
-    makeTodoItemTitle(item, event.target.parentNode.parentNode);
-    event.target.parentNode.remove();
-
+  } else if (event.target.class == "todo-element") {
     
+    index = event.target.parentNode.id;
+    let item = project.getByIndex(index);
+
+    makeTodoItemTitle(item, event.target.parentNode.parentNode);
+
+    event.target.parentNode.remove();
+    
+  } else if (event.target.class == "todo-deleter") {
+
+    deleteTodo(event);
+    
+  } else {
+
+    return;
+
   }
 }
-function expandProject (event) {
+function projOnClick(event) {
 
   if (event.target.class == "project-expand") {
 
@@ -243,7 +297,15 @@ function expandProject (event) {
     }
 
     populateTodoList(project);
+  } else if (event.target.class == "proj-deleter") {
+    deleteProject(event);
+    
+  } else {
+
+    return;
+
   }
+  
 }
 
 function addButtons () {
@@ -257,20 +319,22 @@ function addButtons () {
 
   const addTodoButton = document.createElement("button");
   addTodoButton.id = "todo-button";
-  addTodoButton.textContent = "Add Project";
+  addTodoButton.textContent = "Add Todo";
 
   projContainer.appendChild(addProjButton);
   todoContainer.appendChild(addTodoButton);
 
-  addProjButton.addEventListener("click", projButtonOnClick);
+  addProjButton.addEventListener("click", createProjForm);
+  addTodoButton.addEventListener("click", createTodoForm);
 
 }
 
-function projButtonOnClick(event) {
+function createProjForm(event) {
 
     const projContainer = document.querySelector("#proj-container");
 
     const projForm = document.createElement("form");
+    projForm.id = ("proj-form");
 
     const projInputLabel = document.createElement("label");
     projInputLabel.setAttribute("for", "proj-input");
@@ -291,11 +355,11 @@ function projButtonOnClick(event) {
 
     projContainer.insertBefore(projForm, projContainer.children[1]);
 
-    projInputSubmit.addEventListener("click", onClickProjInputSubmit);
+    projInputSubmit.addEventListener("click", projSubmit);
 
 }
 
-function onClickProjInputSubmit(event) {
+function projSubmit(event) {
   
   event.preventDefault();
   const projInput = document.querySelector("#proj-input");
@@ -306,16 +370,91 @@ function onClickProjInputSubmit(event) {
   if (projList.hasChildNodes()) {
 
     index = projList.children.length;   
-    
   }
 
   const newProj = createNewProject(projInput.value, index);
 
   populateProjects(getProjectsFromStorage());
 
-  const projForm = document.querySelector("form");
+  const projForm = document.querySelector("#proj-form");
   projForm.remove();
 
 
+}
+
+
+function createTodoForm(event) {
+
+    const todoContainer = document.querySelector("#todo-container");
+
+    const todoForm = document.createElement("form");
+    todoForm.id = ("todo-form");
+
+    const todoInputLabel = document.createElement("label");
+    // todoInputLabel.setAttribute("for", "toao-input");
+
+    const todoInput = document.createElement("input");
+    todoInput.id = "todo-input";
+    todoInput.setAttribute("type", "text");
+    todoInput.setAttribute("placeholder", "New Todo");
+    todoInput.setAttribute("value", "");
+
+    const todoInputSubmit = document.createElement("button");
+    todoInputSubmit.textContent = "Create";
+    todoInputSubmit.id = "todo-submit";
+
+    todoForm.appendChild(todoInputLabel);
+    todoForm.appendChild(todoInput);
+    todoForm.appendChild(todoInputSubmit);
+
+    todoContainer.insertBefore(todoForm, todoContainer.children[1]);
+
+    todoInputSubmit.addEventListener("click", todoSubmit);
+
+}
+
+function todoSubmit(event) {
+  
+  event.preventDefault();
+
+  const title = document.querySelector("#todo-input").value;
+  const todoList = document.querySelector("#todo-list");
+
+  const key = document.querySelector("#todo-header").textContent;
+  const project = getFromStorage(key);
+
+  let index = 0;
+
+  if (todoList.hasChildNodes()) {
+
+    index = todoList.children.length;   
+    
+  }
+
+  const newTodo = new Todo(title,"Hello Descript", "14-06-21", "red", "false", index);
+
+  project.addToItems(newTodo);
+  populateTodoList(project);
+
+  const todoForm = document.querySelector("#todo-form");
+  todoForm.remove();
+
+
+}
+
+function deleteProject (event) {
+
+  const key = event.target.value;
+  localStorage.removeItem(key);
+
+  event.target.parentNode.remove();
+  setTodoList();
+  
+}
+
+function deleteTodo (event) {
+  const key = event.target.value;
+
+  
 }
 

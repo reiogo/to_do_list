@@ -56,4 +56,3 @@ export function unwrapAndMakeTodo (todoItemList) {
   return array;
 
 }
-

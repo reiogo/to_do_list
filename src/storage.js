@@ -1,11 +1,6 @@
 import {Todo, unwrapAndMakeTodo} from './todo';
 import {Project, createNewProject} from './projects';
 
-function createTodo (project) {
-
-  
-  
-}
 
 export function addToStorage(project) {
 
@@ -60,7 +55,7 @@ export function getIndexFromStorage(key) {
 
 export function getProjectsFromStorage () {
   
-  let returnArray = []
+  let returnArray = [];
 
   for (let i = 0; i < localStorage.length; i++) {
 
@@ -81,3 +76,5 @@ export function getProjectsFromStorage () {
     return returnArray;
   
 }
+
+

@@ -21,8 +21,16 @@ export class Project {
   addToItems(todoItem) {
 
     this.todoItemList.push(todoItem);
+    addToStorage(this);
 
   }
+
+  removeItem(project, todoIndex) {
+
+
+    
+  }
+  
   
 
   get() {
