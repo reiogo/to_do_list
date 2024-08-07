@@ -9,61 +9,8 @@ import {addToStorage,
   getProjectsFromStorage
 } from './storage';
 
-export function startUp(startUpProjects) {
 
-  document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100vh/ 1fr 3fr; font-size: 28px;"
-
-  const projContainer = document.createElement("div");
-  projContainer.id = "proj-container";
-  projContainer.style = "padding-left: 35px;";
-
-  const todoContainer = document.createElement("div");
-  todoContainer.id = "todo-container";
-  todoContainer.style = "padding-left: 35px;";
-
-  document.body.appendChild(projContainer);
-  document.body.appendChild(todoContainer);
-
-
-  const projDiv = document.createElement("div");
-  projDiv.id = "proj-div";
-
-
-  const todoDiv = document.createElement("div");
-  todoDiv.id = "todo-div";
-
-
-
-  projContainer.appendChild(projDiv);
-  todoContainer.appendChild(todoDiv);
-  addButtons();
-
-  const projHeader = document.createElement("h2");
-  projHeader.textContent = "Projects"
-  projDiv.appendChild(projHeader);
-
-
-
-  
-  
-  const defaultTodo = new Todo("Example Todo Item", "Example Description", "14-06-21", "red", "false", "0");
-  const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
-  const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", "15-06-21", "red", "false", "1");
-  const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
-  const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo3], 1);
-
-  addToStorage(defaultProj);
-  addToStorage(defaultProj2);
-
-  populateProjects(getProjectsFromStorage());
-
-  setTodoList();
-
-  addEvents();
-
-}
-
-function setTodoList () {
+export function setTodoList () {
   
   if (localStorage.length == 0) {
     const project = 0;
@@ -160,7 +107,7 @@ export function populateTodoList (project) {
     if(project.indexExists(i)) {
 
       const listItem = document.createElement("li");
-      listItem.style = "list-style-type: none;";
+      listItem.style = "list-style-type: none; display: flex;";
 
       makeTodoItemTitle(project.getByIndex(i), listItem);
 
@@ -186,7 +133,7 @@ export function populateTodoList (project) {
 }
 
 
-function makeTodoItemTitle (todoItem, currentListItem) {
+export function makeTodoItemTitle (todoItem, currentListItem) {
 
   const index = todoItem.getIndex();
 
@@ -200,7 +147,7 @@ function makeTodoItemTitle (todoItem, currentListItem) {
   todoButton.id = index; 
   todoButton.class = "todo-item-title"; 
   todoButton.style =
-    "border: none; font-size: 1.5rem";
+    `border: none; font-size: 1.5rem; background-color: ${todoItem.getColor()}`;
 
   currentListItem.appendChild(todoDeleter);
   currentListItem.appendChild(todoButton);
@@ -208,32 +155,46 @@ function makeTodoItemTitle (todoItem, currentListItem) {
 }
 
 
-function makeTodoItemCard (todoItem, currentListItem) {
+export function makeTodoItemCard (todoItem, currentListItem) {
 
   const index = todoItem.getIndex();
 
   const todoDeleter = document.createElement("button");
-  todoDeleter.style = "height: 1rem; margin: 4px;";
+  todoDeleter.style = "height: 1rem; margin: 4px; border-radius: 50%;";
   todoDeleter.class = "todo-deleter";
   todoDeleter.value = index;
 
   const todoCard = document.createElement("div");
   todoCard.class = "todo-card";
   todoCard.id = index;
+  const color = todoItem.getColor();
 
   const item = todoItem.get();
 
   const todoCardTitle = document.createElement("p");
   todoCardTitle.textContent = item.title;
   todoCardTitle.class = "todo-element";
+  todoCardTitle.style = `background-color: ${color};`
 
   const todoCardDesc = document.createElement("p");
   todoCardDesc.textContent = item.description;
   todoCardDesc.class = "todo-element";
 
-  const todoCardDate = document.createElement("p");
-  todoCardDate.textContent = item.duedate;
-  todoCardDate.class = "todo-element";
+  const dateLabel = document.createElement("label");
+  dateLabel.setAttribute("for", "date-input");
+  dateLabel.textContent = "Due: ";
+
+  const date = document.createElement("input");
+  date.setAttribute("type", "date");
+  const storedDate = todoItem.getDate();
+  console.log(storedDate);
+  date.value = storedDate;
+  date.name = "duedate";
+  date.id = "date-input";
+
+  // const todoCardDate = document.createElement("p");
+  // todoCardDate.textContent = `Due: ${item.duedate}`;
+  // todoCardDate.class = "duedate";
 
   const todoCardPriority = document.createElement("p");
   todoCardPriority.textContent = item.priority;
@@ -247,15 +208,16 @@ function makeTodoItemCard (todoItem, currentListItem) {
   currentListItem.appendChild(todoCard);
 
   todoCard.appendChild(todoCardTitle);
-  todoCard.appendChild(todoCardDate);
   todoCard.appendChild(todoCardDesc);
-  todoCard.appendChild(todoCardPriority);
-  todoCard.appendChild(todoCardComplete);
+  todoCard.appendChild(dateLabel);
+  todoCard.appendChild(date);
+  // todoCard.appendChild(todoCardPriority);
+  // todoCard.appendChild(todoCardComplete);
   
 }
 
 
-function addEvents() {
+export function addEvents() {
   
   const projDiv = 
     document.querySelector("#proj-container");
@@ -268,7 +230,7 @@ function addEvents() {
 
 }
 
-function projOnClick(event) {
+export function projOnClick(event) {
 
   if (event.target.class == "project-expand") {
 
@@ -295,7 +257,7 @@ function projOnClick(event) {
   
 }
 
-function todoOnClick(event) {
+export function todoOnClick(event) {
   
   const key = document.querySelector("#todo-header").textContent;
   const project = getFromStorage(key);
@@ -350,28 +312,34 @@ function todoOnClick(event) {
   }
 }
 
-function addButtons () {
+export function addProjButton() {
 
   const projContainer = document.querySelector("#proj-container");
-  const todoContainer = document.querySelector("#todo-container");
 
   const addProjButton = document.createElement("button");
   addProjButton.id = "proj-button";
   addProjButton.textContent = "Add Project";
 
+  projContainer.appendChild(addProjButton);
+
+  addProjButton.addEventListener("click", createProjForm);
+
+}
+
+export function addTodoButton() {
+  
+  const todoContainer = document.querySelector("#todo-container");
+
   const addTodoButton = document.createElement("button");
   addTodoButton.id = "todo-button";
   addTodoButton.textContent = "Add Todo";
 
-  projContainer.appendChild(addProjButton);
   todoContainer.appendChild(addTodoButton);
 
-  addProjButton.addEventListener("click", createProjForm);
   addTodoButton.addEventListener("click", createTodoForm);
 
 }
-
-function createProjForm(event) {
+export function createProjForm(event) {
 
     const projContainer = document.querySelector("#proj-container");
 
@@ -399,9 +367,14 @@ function createProjForm(event) {
 
     projInputSubmit.addEventListener("click", projSubmit);
 
+
+    // Remove add button.
+    const addButton = document.querySelector("#proj-button");
+    addButton.remove();
+
 }
 
-function projSubmit(event) {
+export function projSubmit(event) {
   
   event.preventDefault();
   const projInput = document.querySelector("#proj-input");
@@ -421,11 +394,13 @@ function projSubmit(event) {
   const projForm = document.querySelector("#proj-form");
   projForm.remove();
 
+  addProjButton();
+
 
 }
 
 
-function createTodoForm(event) {
+export function createTodoForm(event) {
 
     const todoContainer = document.querySelector("#todo-container");
 
@@ -434,27 +409,27 @@ function createTodoForm(event) {
 
     // title
     const titleLabel = document.createElement("label");
-    titleLabel.setAttribute("for", "title");
+    titleLabel.setAttribute("for", "title-input");
 
     const title = document.createElement("input");
-    title.id = "title";
+    title.id = "title-input";
     title.setAttribute("type", "text");
     title.setAttribute("placeholder", "New Todo");
     title.setAttribute("value", "");
 
-    // date
-    const dateLabel = document.createElement("label");
-    dateLabel.setAttribute("for", "date");
+    // // date
+    // const dateLabel = document.createElement("label");
+    // dateLabel.setAttribute("for", "date");
 
-    const date = document.createElement("input");
-    date.id = "date";
-    date.setAttribute("type", "text");
-    date.setAttribute("placeholder", "Date");
-    date.setAttribute("value", "");
+    // const date = document.createElement("input");
+    // date.id = "date";
+    // date.setAttribute("type", "text");
+    // date.setAttribute("placeholder", "Date");
+    // date.setAttribute("value", "");
 
     // priority
     const greenPriorityLabel = document.createElement("label");
-    greenPriorityLabel.setAttribute("for", "priority");
+    greenPriorityLabel.setAttribute("for", "green");
     greenPriorityLabel.textContent = "Low";
 
     const greenPriority = document.createElement("input");
@@ -463,31 +438,29 @@ function createTodoForm(event) {
 
     greenPriority.name = "priority_level";
     greenPriority.id = "green";
-    greenPriority.value = "green";
+    greenPriority.value = "yellowgreen";
 
     const yellowPriorityLabel = document.createElement("label");
-    yellowPriorityLabel.setAttribute("for", "priority");
+    yellowPriorityLabel.setAttribute("for", "yellow");
     yellowPriorityLabel.textContent = "Medium";
 
     const yellowPriority = document.createElement("input");
     yellowPriority.setAttribute("type", "radio");
-    yellowPriority.checked = "checked";
 
     yellowPriority.name = "priority_level";
     yellowPriority.id = "yellow";
-    yellowPriority.value = "yellow";
+    yellowPriority.value = "#fcf22d ";
 
     const redPriorityLabel = document.createElement("label");
-    redPriorityLabel.setAttribute("for", "priority");
+    redPriorityLabel.setAttribute("for", "red");
     redPriorityLabel.textContent = "High";
 
     const redPriority = document.createElement("input");
     redPriority.setAttribute("type", "radio");
-    redPriority.checked = "checked";
 
     redPriority.name = "priority_level";
     redPriority.id = "red";
-    redPriority.value = "red";
+    redPriority.value = "Tomato";
 
 
     const todoInputSubmit = document.createElement("button");
@@ -497,8 +470,8 @@ function createTodoForm(event) {
     todoForm.appendChild(titleLabel);
     todoForm.appendChild(title);
 
-    todoForm.appendChild(dateLabel);
-    todoForm.appendChild(date);
+    // todoForm.appendChild(dateLabel);
+    // todoForm.appendChild(date);
 
     todoForm.appendChild(greenPriority);
     todoForm.appendChild(greenPriorityLabel);
@@ -513,13 +486,18 @@ function createTodoForm(event) {
 
     todoInputSubmit.addEventListener("click", todoSubmit);
 
+    // Remove add button.
+    const addButton = document.querySelector("#todo-button");
+    addButton.remove();
+
 }
 
-function todoSubmit(event) {
+export function todoSubmit(event) {
   
   event.preventDefault();
 
-  const title = document.querySelector("#todo-input").value;
+  const title = document.querySelector("#title-input").value;
+  const priority = document.querySelector('input[name = "priority_level"]:checked').value;
   const todoList = document.querySelector("#todo-list");
 
   const key = document.querySelector("#todo-header").textContent;
@@ -540,7 +518,7 @@ function todoSubmit(event) {
     }
   }
 
-  const newTodo = new Todo(title,"Hello Descript", "14-06-21", "red", "false", index);
+  const newTodo = new Todo(title,"Hello Descript", "2012-02-02", priority, "false", index);
 
   project.addToItems(newTodo);
   populateTodoList(project);
@@ -548,10 +526,12 @@ function todoSubmit(event) {
   const todoForm = document.querySelector("#todo-form");
   todoForm.remove();
 
+  addTodoButton();
+
 
 }
 
-function deleteProject (event) {
+export function deleteProject (event) {
 
   const key = event.target.value;
   localStorage.removeItem(key);
@@ -561,7 +541,7 @@ function deleteProject (event) {
   
 }
 
-function deleteTodo (event) {
+export function deleteTodo (event) {
 
   const key =
     document.querySelector("#todo-header").textContent;

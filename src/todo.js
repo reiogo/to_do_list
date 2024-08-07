@@ -34,6 +34,20 @@ export class Todo {
 
   }
 
+
+  getColor() {
+
+    return this.priority;
+    
+  }
+
+
+  getDate() {
+    
+    return this.duedate;
+
+  }
+
 }
 
 // Takes an array of objects and returns array of todo items.
