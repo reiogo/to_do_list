@@ -432,21 +432,81 @@ function createTodoForm(event) {
     const todoForm = document.createElement("form");
     todoForm.id = ("todo-form");
 
-    const todoInputLabel = document.createElement("label");
-    todoInputLabel.setAttribute("for", "todo-input");
+    // title
+    const titleLabel = document.createElement("label");
+    titleLabel.setAttribute("for", "title");
 
-    const todoInput = document.createElement("input");
-    todoInput.id = "todo-input";
-    todoInput.setAttribute("type", "text");
-    todoInput.setAttribute("placeholder", "New Todo");
-    todoInput.setAttribute("value", "");
+    const title = document.createElement("input");
+    title.id = "title";
+    title.setAttribute("type", "text");
+    title.setAttribute("placeholder", "New Todo");
+    title.setAttribute("value", "");
+
+    // date
+    const dateLabel = document.createElement("label");
+    dateLabel.setAttribute("for", "date");
+
+    const date = document.createElement("input");
+    date.id = "date";
+    date.setAttribute("type", "text");
+    date.setAttribute("placeholder", "Date");
+    date.setAttribute("value", "");
+
+    // priority
+    const greenPriorityLabel = document.createElement("label");
+    greenPriorityLabel.setAttribute("for", "priority");
+    greenPriorityLabel.textContent = "Low";
+
+    const greenPriority = document.createElement("input");
+    greenPriority.setAttribute("type", "radio");
+    greenPriority.checked = "checked";
+
+    greenPriority.name = "priority_level";
+    greenPriority.id = "green";
+    greenPriority.value = "green";
+
+    const yellowPriorityLabel = document.createElement("label");
+    yellowPriorityLabel.setAttribute("for", "priority");
+    yellowPriorityLabel.textContent = "Medium";
+
+    const yellowPriority = document.createElement("input");
+    yellowPriority.setAttribute("type", "radio");
+    yellowPriority.checked = "checked";
+
+    yellowPriority.name = "priority_level";
+    yellowPriority.id = "yellow";
+    yellowPriority.value = "yellow";
+
+    const redPriorityLabel = document.createElement("label");
+    redPriorityLabel.setAttribute("for", "priority");
+    redPriorityLabel.textContent = "High";
+
+    const redPriority = document.createElement("input");
+    redPriority.setAttribute("type", "radio");
+    redPriority.checked = "checked";
+
+    redPriority.name = "priority_level";
+    redPriority.id = "red";
+    redPriority.value = "red";
+
 
     const todoInputSubmit = document.createElement("button");
     todoInputSubmit.textContent = "Create";
     todoInputSubmit.id = "todo-submit";
 
-    todoForm.appendChild(todoInputLabel);
-    todoForm.appendChild(todoInput);
+    todoForm.appendChild(titleLabel);
+    todoForm.appendChild(title);
+
+    todoForm.appendChild(dateLabel);
+    todoForm.appendChild(date);
+
+    todoForm.appendChild(greenPriority);
+    todoForm.appendChild(greenPriorityLabel);
+    todoForm.appendChild(yellowPriority);
+    todoForm.appendChild(yellowPriorityLabel);
+    todoForm.appendChild(redPriority);
+    todoForm.appendChild(redPriorityLabel);
+
     todoForm.appendChild(todoInputSubmit);
 
     todoContainer.insertBefore(todoForm, todoContainer.children[1]);
