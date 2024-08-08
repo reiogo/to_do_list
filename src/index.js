@@ -2,11 +2,11 @@ import {Todo, unwrapAndMakeTodo} from './todo';
 import {Project, createNewProject} from './projects';
 import {
   addToStorage, 
-  getFromStorage,
+  getProjectFromStorage,
   getTitleFromStorage,
   getContentFromStorage,
   getIndexFromStorage,
-  getProjectsFromStorage
+  getAllProjectsFromStorage
 } from './storage';
 import {
   setTodoList,
@@ -65,7 +65,7 @@ projDiv.appendChild(projHeader);
 // Add default.
 fill();
 
-populateProjects(getProjectsFromStorage());
+populateProjects(getAllProjectsFromStorage());
 
 setTodoList();
 

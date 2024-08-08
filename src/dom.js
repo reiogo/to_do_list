@@ -2,11 +2,11 @@ import {Project,
   createNewProject} from './projects';
 import {Todo, unwrapAndMakeTodo} from './todo';
 import {addToStorage, 
-  getFromStorage,
+  getProjectFromStorage,
   getTitleFromStorage,
   getContentFromStorage,
   getIndexFromStorage,
-  getProjectsFromStorage
+  getAllProjectsFromStorage
 } from './storage';
 
 
@@ -18,7 +18,7 @@ export function setTodoList () {
     return;
   }
   const key = document.querySelector("#proj-list").firstChild.lastChild.id;
-  populateTodoList(getFromStorage(key));
+  populateTodoList(getProjectFromStorage(key));
 
 }
 
@@ -234,9 +234,10 @@ function makeTodoItemCard (todoItem, currentListItem) {
   const storedDate = todoItem.getDate();
   date.value = storedDate;
   date.name = "duedate";
-  date.id = "date-input";
+  date.id = `date-input-${todoItem.getTitle}`;
 
   const dateSubmit = document.createElement("button");
+  dateSubmit.class = "date-button";
   dateSubmit.textContent = "Set Date";
 
   dateForm.appendChild(dateLabel);
@@ -293,7 +294,7 @@ function projOnClick(event) {
 function todoOnClick(event) {
   
   const key = document.querySelector("#todo-header").textContent;
-  const project = getFromStorage(key);
+  const project = getProjectFromStorage(key);
   let index = event.target.id;
   let item = project.getByIndex(index);
   let listItem = event.target.parentNode;
@@ -338,11 +339,42 @@ function todoOnClick(event) {
 
     deleteTodo(event);
     
+  } else if (event.target.class == "date-button") {
+    submitDate(event);
+    
   } else {
 
     return;
 
   }
+}
+
+const submitDate = function dateEnteredOnTodoItem() {
+
+  event.preventDefault();
+
+  const todoItemTitle =
+    event.target.parentNode.parentNode.firstChild.textContent;
+  console.log(todoItemTitle);
+
+  const dateInput =
+    document.querySelector(`#date-input-${todoItemTitle}`);
+
+  const date = dateInput.valueAsDate;
+
+  const projectName =
+    document.querySelector("#todo-header").textContent
+
+  const project = getProjectFromStorage(projectName)
+  
+  const todoItem = project.getTodoByTitle(todoItemTitle);
+
+  project.removeItemByTitle(todoItemTitle);
+
+  todoItem.setDate(date);
+
+  project.addToItems(todoItem);
+
 }
 
 
@@ -396,7 +428,7 @@ function projSubmit(event) {
 
   const newProj = createNewProject(projInput.value, index);
 
-  populateProjects(getProjectsFromStorage());
+  populateProjects(getAllProjectsFromStorage());
 
   const projForm = document.querySelector("#proj-form");
   projForm.remove();
@@ -495,7 +527,7 @@ function todoSubmit(event) {
   const todoList = document.querySelector("#todo-list");
 
   const key = document.querySelector("#todo-header").textContent;
-  const project = getFromStorage(key);
+  const project = getProjectFromStorage(key);
 
   let index = 0;
 
@@ -528,7 +560,7 @@ function todoSubmit(event) {
 function deleteProject (event) {
 
   const key = event.target.value;
-  localStorage.removeItem(key);
+  localStorage.removeItemByIndex(key);
 
   event.target.parentNode.remove();
   setTodoList();
@@ -539,10 +571,10 @@ function deleteTodo (event) {
 
   const key =
     document.querySelector("#todo-header").textContent;
-  const project = getFromStorage(key);
+  const project = getProjectFromStorage(key);
   const index = event.target.value;
 
-  project.removeItem(index);
+  project.removeItemByIndex(index);
 
   const todoListItem =event.target.parentNode;
   while (todoListItem.hasChildNodes()) {

@@ -1,9 +1,9 @@
 import {addToStorage, 
-  getFromStorage,
+  getProjectFromStorage,
   getTitleFromStorage,
   getContentFromStorage,
   getIndexFromStorage,
-  getProjectsFromStorage
+  getAllProjectsFromStorage
 } from './storage';
 import {Todo, unwrapAndMakeTodo} from './todo';
 
@@ -45,7 +45,26 @@ export class Project {
   }
 
 
-  removeItem(todoIndex) {
+  removeItemByTitle(todoTitle) {
+
+    let newArray = [];
+
+    for(let i = 0; i < this.todoItemList.length; i++) {
+
+      if(todoIndex == this.todoItemList[i].getTitle()) continue;
+
+      newArray.push(this.todoItemList[i]);
+
+    }
+
+    this.todoItemList = newArray;
+    addToStorage(this);
+
+    
+  }
+
+
+  removeItemByIndex(todoIndex) {
 
     let newArray = [];
 
@@ -119,12 +138,29 @@ export class Project {
         todoItem = this.todoItemList[i];
 
       } 
-
     }
 
     return todoItem;
 
   }
+
+
+  getTodoByTitle(title) {
+
+    console.log("fix this");
+    let todoItem = {};
+
+    for(let i = 0; i < this.todoItemList.length; i++) {
+
+      if(index == this.todoItemList[i].getTitle()) {
+
+        todoItem = this.todoItemList[i];
+
+      } 
+    return todoItem;
+    
+  }
+  
 
 }
 

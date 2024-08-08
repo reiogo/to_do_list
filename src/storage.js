@@ -12,7 +12,7 @@ export function addToStorage(project) {
 
 }
 
-export function getFromStorage(key) {
+export function getProjectFromStorage(key) {
   
   const storageContent = JSON.parse(localStorage.getItem(key));
   const items = JSON.parse(storageContent.content);
@@ -53,7 +53,7 @@ export function getIndexFromStorage(key) {
 }
 
 
-export function getProjectsFromStorage () {
+export function getAllProjectsFromStorage () {
   
   let returnArray = [];
 
@@ -65,7 +65,7 @@ export function getProjectsFromStorage () {
 
       if(item.index == i) {
 
-        const project = getFromStorage(key);
+        const project = getProjectFromStorage(key);
         returnArray.push(project);
 
         break;

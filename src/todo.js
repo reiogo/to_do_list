@@ -12,6 +12,13 @@ export class Todo {
   }
 
 
+  setDate(newDate) {
+
+    this.duedate = newDate;
+    
+  }
+
+
   get() {
 
     const todoPackage = {title: this.title, description: this.description, duedate: this.duedate, priority: this.priority, complete: this.complete, todoIndex: this.todoIndex};
