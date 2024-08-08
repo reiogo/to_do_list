@@ -55,6 +55,12 @@ export class Todo {
 
   }
 
+
+  getDesc() {
+    return this.description;
+  }
+  
+
 }
 
 // Takes an array of objects and returns array of todo items.

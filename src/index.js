@@ -1,11 +1,7 @@
-import {Todo, unwrapAndMakeTodo} from './todo';
-import {Project, createNewProject} from './projects';
+import {Todo} from './todo';
+import {Project} from './projects';
 import {
   addToStorage, 
-  getProjectFromStorage,
-  getTitleFromStorage,
-  getContentFromStorage,
-  getIndexFromStorage,
   getAllProjectsFromStorage
 } from './storage';
 import {
@@ -13,7 +9,6 @@ import {
   addTodoButton,
   addProjButton,
   populateProjects, 
-  populateTodoList,
   addEvents,
 } from './dom';
 
@@ -63,7 +58,11 @@ projHeader.textContent = "Projects"
 projDiv.appendChild(projHeader);
 
 // Add default.
-fill();
+if (localStorage.length == 0) {
+
+  fill();
+  
+}
 
 populateProjects(getAllProjectsFromStorage());
 

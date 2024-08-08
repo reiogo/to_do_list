@@ -1,9 +1,7 @@
-import {Project,
-  createNewProject} from './projects';
-import {Todo, unwrapAndMakeTodo} from './todo';
-import {addToStorage, 
+import {Project, createNewProject} from './projects';
+import {Todo} from './todo';
+import {
   getProjectFromStorage,
-  getTitleFromStorage,
   getContentFromStorage,
   getIndexFromStorage,
   getAllProjectsFromStorage
@@ -216,33 +214,12 @@ function makeTodoItemCard (todoItem, currentListItem) {
   todoCardTitle.class = "todo-element";
   todoCardTitle.style = `background-color: ${color};`
 
-  const todoCardDesc = document.createElement("p");
-  todoCardDesc.textContent = item.description;
-  todoCardDesc.class = "todo-element";
 
-  // Date form
-  const dateForm = document.createElement("form");
-  dateForm.id = "date-form";
-  dateForm.style = "display: flex; flex-direction: column;";
-
-  const dateLabel = document.createElement("label");
-  dateLabel.setAttribute("for", "date-input");
-  dateLabel.textContent = "Due: ";
-
-  const date = document.createElement("input");
-  date.setAttribute("type", "date");
-  const storedDate = todoItem.getDate();
-  date.value = storedDate;
-  date.name = "duedate";
-  date.id = `date-input-${todoItem.getTitle}`;
-
-  const dateSubmit = document.createElement("button");
-  dateSubmit.class = "date-button";
-  dateSubmit.textContent = "Set Date";
-
-  dateForm.appendChild(dateLabel);
-  dateForm.appendChild(date);
-  dateForm.appendChild(dateSubmit);
+  // Date
+  const date = document.createElement("p");
+  date.textContent = `Due: ${todoItem.getDate()}`;
+  date.class = "date-on-card";
+  date.id = `date-${todoItem.getIndex()}`;
 
 
   const todoCardPriority = document.createElement("p");
@@ -257,123 +234,132 @@ function makeTodoItemCard (todoItem, currentListItem) {
   currentListItem.appendChild(todoCard);
 
   todoCard.appendChild(todoCardTitle);
-  todoCard.appendChild(todoCardDesc);
-  todoCard.appendChild(dateForm);
+  addDescription(todoItem, todoCard);
+  todoCard.appendChild(date);
+  
+}
+
+const projectGetter = function getCurrentProjectFromDom() {
+
+  const projectName =
+    document.querySelector("#todo-header").textContent;
+  const project = getProjectFromStorage(projectName);
+
+  return {projectName, project};
+
   
 }
 
 
+const addDescription = function descriptionOptions(todoItem, todoCard) {
+  
+  // const {projectName, project} = projectGetter();
+  const todoIndex = todoItem.getIndex();
 
-function projOnClick(event) {
+  if (todoItem.getDesc() == "") {
 
-  if (event.target.class == "project-expand") {
+    const addDescButton = document.createElement("button");
 
-    const todoList = document.querySelector("#todo-div");
-    const key = event.target.id;
+    addDescButton.textContent = "Add Description";
+    addDescButton.style = "font-size: .8rem;";
+    addDescButton.class = "todo-element";
 
-    const project = new Project (key, getContentFromStorage(key), getIndexFromStorage(key));
-
-    while (todoList.hasChildNodes()) {
-
-      todoList.removeChild(todoList.firstChild);
-
-    }
-
-    populateTodoList(project);
-  } else if (event.target.class == "proj-deleter") {
-    deleteProject(event);
+    todoCard.appendChild(addDescButton);
     
   } else {
+    //Display description
+    const desc = document.createElement("p");
+    desc.textContent = todoItem.getDesc()
+    todoCard.appendChild(desc);
 
-    return;
-
-  }
-  
-}
-
-function todoOnClick(event) {
-  
-  const key = document.querySelector("#todo-header").textContent;
-  const project = getProjectFromStorage(key);
-  let index = event.target.id;
-  let item = project.getByIndex(index);
-  let listItem = event.target.parentNode;
-
-  if(event.target.class == "todo-item-title") {
-
-    while (listItem.hasChildNodes()) {
-
-      listItem.removeChild(listItem.firstChild);
-
-    }
-
-    makeTodoItemCard(item, listItem);
-    
-  } else if (event.target.class == "todo-card") {
-
-    while (listItem.hasChildNodes()) {
-
-      listItem.removeChild(listItem.firstChild);
-
-    }
-
-    makeTodoItemTitle(item, listItem);
-
-    
-  } else if (event.target.class == "todo-element") {
-    
-    index = event.target.parentNode.id;
-    item = project.getByIndex(index);
-    listItem = event.target.parentNode.parentNode;
-
-
-    while (listItem.hasChildNodes()) {
-
-      listItem.removeChild(listItem.firstChild);
-
-    }
-
-    makeTodoItemTitle(item, listItem);
-    
-  } else if (event.target.class == "todo-deleter") {
-
-    deleteTodo(event);
-    
-  } else if (event.target.class == "date-button") {
-    submitDate(event);
-    
-  } else {
-
-    return;
-
+    //Add edit option
+    const editButton = document.create
   }
 }
 
-const submitDate = function dateEnteredOnTodoItem() {
+
+
+
+const dateForm = function createDateFormOnClick(event) {
+  
+  //Get todoitem for its index.
+  const todoItemTitle =
+    event.target.parentNode.firstChild.textContent;
+  const {projectName, project} = projectGetter();
+  const todoItem = project.getTodoByTitle(todoItemTitle);
+  const todoItemIndex = todoItem.getIndex();
+
+  // Date form.
+  const dateForm = document.createElement("form");
+  dateForm.id = "date-form";
+  dateForm.style = "display: flex; flex-direction: column;";
+
+  const dateLabel = document.createElement("label");
+  dateLabel.setAttribute("for", `date-input-${todoItemIndex}`);
+
+  const date = document.createElement("input");
+  date.setAttribute("type", "date");
+  const storedDate = todoItem.getDate();
+  date.value = storedDate;
+  date.name = "duedate";
+  date.id = `date-input-${todoItemIndex}`;
+
+  const dateSubmit = document.createElement("button");
+  dateSubmit.class = "date-button";
+  dateSubmit.textContent = "Set Date";
+
+
+  dateForm.appendChild(dateLabel);
+  dateForm.appendChild(date);
+  dateForm.appendChild(dateSubmit);
+  const currentListItem = event.target.parentNode;
+  currentListItem.appendChild(dateForm);
+
+  
+  dateSubmit.addEventListener( "click", submitDate);
+
+}
+
+const submitDate = function dateEnteredOnTodoItem(event) {
 
   event.preventDefault();
 
   const todoItemTitle =
     event.target.parentNode.parentNode.firstChild.textContent;
-  console.log(todoItemTitle);
-
-  const dateInput =
-    document.querySelector(`#date-input-${todoItemTitle}`);
-
-  const date = dateInput.valueAsDate;
 
   const projectName =
-    document.querySelector("#todo-header").textContent
+    document.querySelector("#todo-header").textContent;
 
-  const project = getProjectFromStorage(projectName)
+  const project = getProjectFromStorage(projectName);
   
   const todoItem = project.getTodoByTitle(todoItemTitle);
 
+  const todoItemIndex = todoItem.getIndex();
+
   project.removeItemByTitle(todoItemTitle);
+
+  const dateInput =
+    document.querySelector(`#date-input-${todoItemIndex}`);
+
+  const date = dateInput.valueAsDate;
 
   todoItem.setDate(date);
 
   project.addToItems(todoItem);
+  
+  const oldDate =
+    document.querySelector(`#date-${todoItem.getIndex()}`);
+  oldDate.remove();
+
+  const newDate = document.createElement("p");
+  newDate.textContent = `Due: ${todoItem.getDate()}`;
+  newDate.class = "date-on-card";
+  newDate.id = `date-${todoItem.getIndex()}`;
+
+  event.target.parentNode.parentNode.appendChild(newDate);
+
+  const form = document.querySelector("#date-form");
+  form.remove();
 
 }
 
@@ -523,6 +509,11 @@ function todoSubmit(event) {
   event.preventDefault();
 
   const title = document.querySelector("#title-input").value;
+
+  if (title == "") {
+    return;
+  }
+  
   const priority = document.querySelector('input[name = "priority_level"]:checked').value;
   const todoList = document.querySelector("#todo-list");
 
@@ -544,7 +535,9 @@ function todoSubmit(event) {
     }
   }
 
-  const newTodo = new Todo(title,"Hello Descript", "2012-02-02", priority, "false", index);
+  const date = new Date();
+
+  const newTodo = new Todo(title,"", date, priority, "false", index);
 
   project.addToItems(newTodo);
   populateTodoList(project);
@@ -585,3 +578,89 @@ function deleteTodo (event) {
 
 }
 
+
+function projOnClick(event) {
+
+  if (event.target.class == "project-expand") {
+
+    const todoList = document.querySelector("#todo-div");
+    const key = event.target.id;
+
+    const project = new Project (key, getContentFromStorage(key), getIndexFromStorage(key));
+
+    while (todoList.hasChildNodes()) {
+
+      todoList.removeChild(todoList.firstChild);
+
+    }
+
+    populateTodoList(project);
+  } else if (event.target.class == "proj-deleter") {
+    deleteProject(event);
+    
+  } else {
+
+    return;
+
+  }
+  
+}
+
+function todoOnClick(event) {
+  
+  const key = document.querySelector("#todo-header").textContent;
+  const project = getProjectFromStorage(key);
+  let index = event.target.id;
+  let item = project.getByIndex(index);
+  let listItem = event.target.parentNode;
+
+  if(event.target.class == "todo-item-title") {
+
+    while (listItem.hasChildNodes()) {
+
+      listItem.removeChild(listItem.firstChild);
+
+    }
+
+    makeTodoItemCard(item, listItem);
+    
+  } else if (event.target.class == "todo-card") {
+
+    while (listItem.hasChildNodes()) {
+
+      listItem.removeChild(listItem.firstChild);
+
+    }
+
+    makeTodoItemTitle(item, listItem);
+
+    
+  } else if (event.target.class == "todo-element") {
+    
+    index = event.target.parentNode.id;
+    item = project.getByIndex(index);
+    listItem = event.target.parentNode.parentNode;
+
+
+    while (listItem.hasChildNodes()) {
+
+      listItem.removeChild(listItem.firstChild);
+
+    }
+
+    makeTodoItemTitle(item, listItem);
+    
+  } else if (event.target.class == "todo-deleter") {
+
+    deleteTodo(event);
+    
+  } else if (event.target.class == "date-on-card") {
+
+    dateForm(event);
+
+  } else {
+
+    return;
+
+  }
+}

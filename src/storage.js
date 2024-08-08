@@ -1,5 +1,5 @@
 import {Todo, unwrapAndMakeTodo} from './todo';
-import {Project, createNewProject} from './projects';
+import {Project} from './projects';
 
 
 export function addToStorage(project) {
