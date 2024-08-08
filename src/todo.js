@@ -59,6 +59,14 @@ export class Todo {
   getDesc() {
     return this.description;
   }
+
+
+  setDesc(newDesc) {
+
+    this.description = newDesc;
+    
+  }
+  
   
 
 }
