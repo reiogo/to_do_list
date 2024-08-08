@@ -254,30 +254,37 @@ const projectGetter = function getCurrentProjectFromDom() {
 
 
 
-const setDesc = function addNewDescOnButtonClick(event, project, todoItem) {
+const setDesc = function addNewDescOnButtonClick(event) {
+
+  const card = event.target.parentNode.parentNode;
+  
+  const {project} = projectGetter();
+  const todoItem = project.getByIndex(card.id);
 
   const index = todoItem.getIndex();
+
+
   const newDesc = 
     document.querySelector(`#desc-input-${index}`).value;
 
   todoItem.setDesc(newDesc);
+  project.removeItemByIndex(index);
+  project.addToItems(todoItem);
 
-  const todoCard = event.target.parentNode;
   
   const desc = document.createElement("p");
-  desc.textContent = todoItem.getDesc()
+  desc.textContent = newDesc;
   desc.id = `desc-${index}`;
   desc.class = "desc";
 
-  todoCard.insertBefore(desc, todoCard.childNodes[2]);
+  card.insertBefore(desc, card.childNodes[2]);
 
-  const oldDesc = document.querySelector(`#desc-${index}`);
-  const editButton = document.querySelector(`#edit-button-${index}`);
+  const textarea = document.querySelector(`#desc-input-${index}`);
+  const addButton = document.querySelector(`#submit-button-${index}`);
 
-  oldDesc.remove();
-  editButton.remove();
+  textarea.remove();
+  addButton.remove();
 
-  
 }
 
 
@@ -300,6 +307,7 @@ const editDesc = function descEditButtonOnClick(event) {
   desc.value = `${todoItem.getDesc()}`;
 
   const submit = document.createElement("button");
+  submit.id = `submit-button-${index}`;
   submit.textContent = "Add";
 
   form.appendChild(descLabel);
@@ -310,9 +318,9 @@ const editDesc = function descEditButtonOnClick(event) {
   card.childNodes[1].remove();
   card.insertBefore(form, card.childNodes[2]);
 
-  submit.addEventListener("click", setDesc(event, project, todoItem));
-
   event.target.remove();
+  submit.addEventListener("click", setDesc);
+
 
 
   
@@ -325,14 +333,18 @@ const createEdit = function createEditButtonOnClick(event) {
 
   const {project} = projectGetter();
   const todoItem = project.getByIndex(card.id);
+  const index = todoItem.getIndex();
 
   const editButton = document.createElement("button");
-  editButton.id = `edit-button-${todoItem.getIndex()}`;
+  editButton.id = `edit-button-${index}`;
   editButton.textContent = "Edit Description"
   
-  card.insertBefore(editButton, card.childNodes[2]);
+  const date = document.querySelector(`#date-${index}`);
+  console.log(date);
+  card.insertBefore(editButton, date);
 
   editButton.addEventListener("click", editDesc);
+
 
 }
 
@@ -748,6 +760,7 @@ function todoOnClick(event) {
   } else if (event.target.class == "desc") {
     
     createEdit(event);
+
 
   } else {
 
