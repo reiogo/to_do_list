@@ -241,46 +241,50 @@ function makeTodoItemCard (todoItem, currentListItem) {
   
 }
 
-const projectGetter = function getCurrentProjectFromDom() {
+
+const contextGetter = function getCurrentTodoAndProjFromDom(card) {
 
   const projectName =
     document.querySelector("#todo-header").textContent;
   const project = getProjectFromStorage(projectName);
 
-  return {projectName, project};
+  const todoItem = project.getByIndex(card.id);
+  const todoIndex = todoItem.getIndex();
 
+  return {todoIndex, todoItem, project};
+  
   
 }
 
 
+const addDesc = function addNewDescOnButtonClick(event) {
+  
+}
 
-const setDesc = function addNewDescOnButtonClick(event) {
+
+const setDesc = function submitEditsToDescOnButtonClick(event) {
 
   const card = event.target.parentNode.parentNode;
   
-  const {project} = projectGetter();
-  const todoItem = project.getByIndex(card.id);
-
-  const index = todoItem.getIndex();
-
+  const {todoIndex, todoItem, project} = contextGetter(card);
 
   const newDesc = 
-    document.querySelector(`#desc-input-${index}`).value;
+    document.querySelector(`#desc-input-${todoIndex}`).value;
 
   todoItem.setDesc(newDesc);
-  project.removeItemByIndex(index);
+  project.removeItemByIndex(todoIndex);
   project.addToItems(todoItem);
 
   
   const desc = document.createElement("p");
   desc.textContent = newDesc;
-  desc.id = `desc-${index}`;
+  desc.id = `desc-${todoIndex}`;
   desc.class = "desc";
 
   card.insertBefore(desc, card.childNodes[2]);
 
-  const textarea = document.querySelector(`#desc-input-${index}`);
-  const addButton = document.querySelector(`#submit-button-${index}`);
+  const textarea = document.querySelector(`#desc-input-${todoIndex}`);
+  const addButton = document.querySelector(`#submit-button-${todoIndex}`);
 
   textarea.remove();
   addButton.remove();
@@ -288,26 +292,24 @@ const setDesc = function addNewDescOnButtonClick(event) {
 }
 
 
-const editDesc = function descEditButtonOnClick(event) {
+const editDesc = function createDescEditFormOnClick(event) {
 
   const card = event.target.parentNode;
 
-  const {project} = projectGetter();
-  const todoItem = project.getByIndex(card.id);
-  const index = todoItem.getIndex();
+  const {todoItem, todoIndex, project} = contextGetter(card);
 
   const form = document.createElement("form");
-  form.id = `desc-form-${index}`;
+  form.id = `desc-form-${todoIndex}`;
   
   const descLabel = document.createElement("label");
-  descLabel.setAttribute("for", `desc-input-${index}`);
+  descLabel.setAttribute("for", `desc-input-${todoIndex}`);
 
   const desc = document.createElement("textarea");
-  desc.id = `desc-input-${index}`;
+  desc.id = `desc-input-${todoIndex}`;
   desc.value = `${todoItem.getDesc()}`;
 
   const submit = document.createElement("button");
-  submit.id = `submit-button-${index}`;
+  submit.id = `submit-button-${todoItem}`;
   submit.textContent = "Add";
 
   form.appendChild(descLabel);
@@ -327,20 +329,16 @@ const editDesc = function descEditButtonOnClick(event) {
 }
 
 
-const createEdit = function createEditButtonOnClick(event) {
+const createEdit = function createButtonForEditingOnClick(event) {
   
   const card = event.target.parentNode;
-
-  const {project} = projectGetter();
-  const todoItem = project.getByIndex(card.id);
-  const index = todoItem.getIndex();
+  const {project, todoItem, todoIndex} = contextGetter(card);
 
   const editButton = document.createElement("button");
-  editButton.id = `edit-button-${index}`;
+  editButton.id = `edit-button-${todoIndex}`;
   editButton.textContent = "Edit Description"
   
-  const date = document.querySelector(`#date-${index}`);
-  console.log(date);
+  const date = document.querySelector(`#date-${todoIndex}`);
   card.insertBefore(editButton, date);
 
   editButton.addEventListener("click", editDesc);
@@ -350,8 +348,7 @@ const createEdit = function createEditButtonOnClick(event) {
 
 
 const addDescription = function descriptionOptions(todoItem, todoCard) {
-  
-  // const {projectName, project} = projectGetter();
+
   const todoIndex = todoItem.getIndex();
 
   if (todoItem.getDesc() == "") {
@@ -377,27 +374,23 @@ const addDescription = function descriptionOptions(todoItem, todoCard) {
 
 const dateForm = function createDateFormOnClick(event) {
   
-  //Get todoitem for its index.
-  const todoItemTitle =
-    event.target.parentNode.firstChild.textContent;
-  const {projectName, project} = projectGetter();
-  const todoItem = project.getTodoByTitle(todoItemTitle);
-  const todoItemIndex = todoItem.getIndex();
+  const card = event.target.parentNode;
+  const {todoItem, todoIndex, project} = contextGetter(card);
 
   // Date form.
   const dateForm = document.createElement("form");
-  dateForm.id = `date-form-${todoItemIndex}`;
+  dateForm.id = `date-form-${todoIndex}`;
   dateForm.style = "display: flex; flex-direction: column;";
 
   const dateLabel = document.createElement("label");
-  dateLabel.setAttribute("for", `date-input-${todoItemIndex}`);
+  dateLabel.setAttribute("for", `date-input-${todoIndex}`);
 
   const date = document.createElement("input");
   date.setAttribute("type", "date");
   const storedDate = todoItem.getDate();
   date.value = storedDate;
   date.name = "duedate";
-  date.id = `date-input-${todoItemIndex}`;
+  date.id = `date-input-${todoIndex}`;
 
   const dateSubmit = document.createElement("button");
   dateSubmit.class = "date-button";
@@ -419,22 +412,13 @@ const submitDate = function dateEnteredOnTodoItem(event) {
 
   event.preventDefault();
 
-  const todoItemTitle =
-    event.target.parentNode.parentNode.firstChild.textContent;
+  const card = event.target.parentNode.parentNode;
+  const {todoItem, todoIndex, project} = contextGetter(card);
 
-  const projectName =
-    document.querySelector("#todo-header").textContent;
-
-  const project = getProjectFromStorage(projectName);
-  
-  const todoItem = project.getTodoByTitle(todoItemTitle);
-
-  const todoItemIndex = todoItem.getIndex();
-
-  project.removeItemByTitle(todoItemTitle);
+  project.removeItemByIndex(todoIndex);
 
   const dateInput =
-    document.querySelector(`#date-input-${todoItemIndex}`);
+    document.querySelector(`#date-input-${todoIndex}`);
 
   const date = dateInput.valueAsDate;
 
@@ -443,17 +427,17 @@ const submitDate = function dateEnteredOnTodoItem(event) {
   project.addToItems(todoItem);
   
   const oldDate =
-    document.querySelector(`#date-${todoItem.getIndex()}`);
+    document.querySelector(`#date-${todoIndex}`);
   oldDate.remove();
 
   const newDate = document.createElement("p");
   newDate.textContent = `Due: ${todoItem.getDate()}`;
   newDate.class = "date-on-card";
-  newDate.id = `date-${todoItem.getIndex()}`;
+  newDate.id = `date-${todoIndex}`;
 
-  event.target.parentNode.parentNode.appendChild(newDate);
+  card.appendChild(newDate);
 
-  const form = document.querySelector("#date-form");
+  const form = document.querySelector(`#date-form-${todoIndex}`);
   form.remove();
 
 }
