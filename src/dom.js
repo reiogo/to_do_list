@@ -281,7 +281,8 @@ const setDesc = function submitEditsToDescOnButtonClick(event) {
   desc.id = `desc-${todoIndex}`;
   desc.class = "desc";
 
-  card.insertBefore(desc, card.childNodes[2]);
+  const date = document.querySelector(`#date-${todoIndex}`);
+  card.insertBefore(desc, date);
 
   const textarea = document.querySelector(`#desc-input-${todoIndex}`);
   const addButton = document.querySelector(`#submit-button-${todoIndex}`);
@@ -309,7 +310,7 @@ const editDesc = function createDescEditFormOnClick(event) {
   desc.value = `${todoItem.getDesc()}`;
 
   const submit = document.createElement("button");
-  submit.id = `submit-button-${todoItem}`;
+  submit.id = `submit-button-${todoIndex}`;
   submit.textContent = "Add";
 
   form.appendChild(descLabel);
@@ -317,9 +318,12 @@ const editDesc = function createDescEditFormOnClick(event) {
   form.appendChild(submit);
 
   
-  card.childNodes[1].remove();
-  card.insertBefore(form, card.childNodes[2]);
+  const oldDesc = document.querySelector(`#desc-${todoIndex}`);
 
+  const date = document.querySelector(`#date-${todoIndex}`);
+  card.insertBefore(form, date);
+
+  oldDesc.remove();
   event.target.remove();
   submit.addEventListener("click", setDesc);
 
