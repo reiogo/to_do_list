@@ -252,13 +252,7 @@ const contextGetter = function getCurrentTodoAndProjFromDom(card) {
   const todoIndex = todoItem.getIndex();
 
   return {todoIndex, todoItem, project};
-  
-  
-}
 
-
-const addDesc = function addNewDescOnButtonClick(event) {
-  
 }
 
 
@@ -293,7 +287,7 @@ const setDesc = function submitEditsToDescOnButtonClick(event) {
 }
 
 
-const editDesc = function createDescEditFormOnClick(event) {
+const descForm = function createDescEditFormOnClick(event) {
 
   const card = event.target.parentNode;
 
@@ -308,6 +302,7 @@ const editDesc = function createDescEditFormOnClick(event) {
   const desc = document.createElement("textarea");
   desc.id = `desc-input-${todoIndex}`;
   desc.value = `${todoItem.getDesc()}`;
+  desc.placeholder = "description";
 
   const submit = document.createElement("button");
   submit.id = `submit-button-${todoIndex}`;
@@ -318,18 +313,19 @@ const editDesc = function createDescEditFormOnClick(event) {
   form.appendChild(submit);
 
   
-  const oldDesc = document.querySelector(`#desc-${todoIndex}`);
+  if (event.target.class == "already-exists") {
+    
+    const oldDesc = document.querySelector(`#desc-${todoIndex}`);
+    oldDesc.remove();
+
+  }
 
   const date = document.querySelector(`#date-${todoIndex}`);
   card.insertBefore(form, date);
 
-  oldDesc.remove();
   event.target.remove();
   submit.addEventListener("click", setDesc);
 
-
-
-  
 }
 
 
@@ -340,12 +336,13 @@ const createEdit = function createButtonForEditingOnClick(event) {
 
   const editButton = document.createElement("button");
   editButton.id = `edit-button-${todoIndex}`;
+  editButton.class = "already-exists"
   editButton.textContent = "Edit Description"
   
   const date = document.querySelector(`#date-${todoIndex}`);
   card.insertBefore(editButton, date);
 
-  editButton.addEventListener("click", editDesc);
+  editButton.addEventListener("click", descForm);
 
 
 }
@@ -361,17 +358,20 @@ const addDescription = function descriptionOptions(todoItem, todoCard) {
 
     addDescButton.textContent = "Add Description";
     addDescButton.style = "font-size: .8rem;";
+    addDescButton.class = "new-desc";
 
     todoCard.appendChild(addDescButton);
-    addDescButton.addEventListener("click", addDesc);
+    addDescButton.addEventListener("click", descForm);
     
   } else {
-    //Display description
+
     const desc = document.createElement("p");
     desc.textContent = todoItem.getDesc()
     desc.id = `desc-${todoItem.getIndex()}`;
     desc.class = "desc";
+
     todoCard.appendChild(desc);
+
   }
 }
 
