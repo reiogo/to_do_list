@@ -14,9 +14,10 @@ import {
 
 const fill = function fillDefault() {
 
-  const defaultTodo = new Todo("Example Todo Item", "Example Description", "2024-08-04", "Tomato", "false", "0");
-  const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", "15-06-21", "Tomato", "false", "1");
-  const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", "15-06-21", "Tomato", "false", "1");
+  const date = new Date();
+  const defaultTodo = new Todo("Example Todo Item", "Example Description", date, "Tomato", "false", "0");
+  const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", date, "Tomato", "false", "1");
+  const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", date, "Tomato", "false", "1");
   const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
   const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo3], 1);
 

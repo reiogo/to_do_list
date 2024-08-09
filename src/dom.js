@@ -1,3 +1,4 @@
+import {format} from 'date-fns'
 import {Project, createNewProject} from './projects';
 import {Todo} from './todo';
 import {
@@ -219,7 +220,16 @@ function makeTodoItemCard (todoItem, currentListItem) {
 
   // Date
   const date = document.createElement("p");
-  date.textContent = `Due: ${todoItem.getDate()}`;
+  let dateValue = todoItem.getDate();
+
+  if (dateValue == null) {
+
+    dateValue = new Date();
+    
+  }
+  
+  date.textContent =
+    `Due: ${format(dateValue, 'E dd/MM/yyyy')}`;
   date.class = "date-on-card";
   date.id = `date-${todoItem.getIndex()}`;
 
@@ -434,7 +444,12 @@ const submitDate = function dateEnteredOnTodoItem(event) {
   const dateInput =
     document.querySelector(`#date-input-${todoIndex}`);
 
-  const date = dateInput.valueAsDate;
+  let date = dateInput.valueAsDate;
+  if (date == null) {
+
+    date = new Date();
+    
+  }
 
   todoItem.setDate(date);
 
@@ -444,8 +459,10 @@ const submitDate = function dateEnteredOnTodoItem(event) {
     document.querySelector(`#date-${todoIndex}`);
   oldDate.remove();
 
+  const formattedDate = format(date, 'E dd/MM/yyyy');
+
   const newDate = document.createElement("p");
-  newDate.textContent = `Due: ${todoItem.getDate()}`;
+  newDate.textContent = `Due: ${formattedDate}`;
   newDate.class = "date-on-card";
   newDate.id = `date-${todoIndex}`;
 
