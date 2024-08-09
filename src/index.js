@@ -59,7 +59,7 @@ projHeader.textContent = "Projects"
 projDiv.appendChild(projHeader);
 
 // Add default.
-if (localStorage.length == 0) {
+if (localStorage.length == 1 && localStorage.getItem("debug") != null) {
 
   fill();
   
