@@ -136,7 +136,7 @@ export function populateTodoList (project) {
       const listItem = document.createElement("li");
       listItem.style = "list-style-type: none; display: flex;";
 
-      makeTodoItemTitle(project.getByIndex(i), listItem);
+      makeTodoItemTitle(project.getTodoByIndex(i), listItem);
 
       todoList.appendChild(listItem);
 
@@ -248,7 +248,7 @@ const contextGetter = function getCurrentTodoAndProjFromDom(card) {
     document.querySelector("#todo-header").textContent;
   const project = getProjectFromStorage(projectName);
 
-  const todoItem = project.getByIndex(card.id);
+  const todoItem = project.getTodoByIndex(card.id);
   const todoIndex = todoItem.getIndex();
 
   return {todoIndex, todoItem, project};
@@ -283,6 +283,13 @@ const setDesc = function submitEditsToDescOnButtonClick(event) {
 
   textarea.remove();
   addButton.remove();
+
+  if (newDesc == "") {
+
+    addDescription(todoItem, card);
+    
+  }
+  
 
 }
 
@@ -360,7 +367,9 @@ const addDescription = function descriptionOptions(todoItem, todoCard) {
     addDescButton.style = "font-size: .8rem;";
     addDescButton.class = "new-desc";
 
-    todoCard.appendChild(addDescButton);
+    const date = document.querySelector(`#date-${todoIndex}`);
+    todoCard.insertBefore(addDescButton, date);
+
     addDescButton.addEventListener("click", descForm);
     
   } else {
@@ -398,6 +407,7 @@ const dateForm = function createDateFormOnClick(event) {
 
   const dateSubmit = document.createElement("button");
   dateSubmit.class = "date-button";
+  dateSubmit.id = `date-button-${todoIndex}`;
   dateSubmit.textContent = "Set Date";
 
 
@@ -696,7 +706,7 @@ function todoOnClick(event) {
   const key = document.querySelector("#todo-header").textContent;
   const project = getProjectFromStorage(key);
   let index = event.target.id;
-  let item = project.getByIndex(index);
+  let item = project.getTodoByIndex(index);
   let listItem = event.target.parentNode;
 
   if(event.target.class == "todo-item-title") {
@@ -724,7 +734,7 @@ function todoOnClick(event) {
   else if (event.target.class == "todo-element") {
     
     index = event.target.parentNode.id;
-    item = project.getByIndex(index);
+    item = project.getTodoByIndex(index);
     listItem = event.target.parentNode.parentNode;
 
 
@@ -741,11 +751,17 @@ function todoOnClick(event) {
 
     deleteTodo(event);
     
-  } else if (event.target.class == "date-on-card") {
+  } else if (
+    event.target.class == "date-on-card" && 
+    document.querySelector(`#date-button-${event.target.parentNode.id}`) == null
+  ) {
 
     dateForm(event);
 
-  } else if (event.target.class == "desc") {
+  } else if (
+    event.target.class == "desc" &&
+    document.querySelector(`#edit-button-${event.target.parentNode.id}`) == null
+  ) {
     
     createEdit(event);
 

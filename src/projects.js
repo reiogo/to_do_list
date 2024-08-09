@@ -123,9 +123,7 @@ export class Project {
 
   
   
-  // Returns todo item. Fix required
-  getByIndex(index) {
-    console.log("fix this");
+  getTodoByIndex(index) {
 
     let todoItem = {};
 
