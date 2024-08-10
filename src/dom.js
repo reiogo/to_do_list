@@ -43,7 +43,8 @@ export function addProjButton() {
 
   const addProjButton = document.createElement("button");
   addProjButton.id = "proj-button";
-  addProjButton.textContent = "Add Project";
+  addProjButton.textContent = "+";
+  addProjButton.style = "appearance: none; border: none; font-size: 2rem; align-self: end;";
 
   projContainer.appendChild(addProjButton);
 
@@ -110,20 +111,22 @@ export function populateTodoList (project) {
   }
 
   
-  const todoHeader = document.createElement("h2");
+  let todoHeader = document.createElement("h2");
   const todoDiv = document.querySelector("#todo-div");
   const todoList = document.createElement("ul");
   todoList.id = "todo-list";
 
   if (project == 0) {
     
-    const todoHeader = document.createElement("h2");
+    todoHeader = document.createElement("h2");
     todoHeader.textContent = "To do list";
+    todoHeader.style = "font-size: 1.7rem";
     todoDiv.appendChild(todoHeader);
     return;
 
   }
   
+  todoHeader.style = "font-size: 1.7rem";
   todoHeader.textContent = `${project.getTitle()}`;
   todoHeader.id = "todo-header";
   let count = project.getLength();
@@ -479,6 +482,7 @@ function createProjForm(event) {
     const projContainer = document.querySelector("#proj-container");
 
     const projForm = document.createElement("form");
+    projForm.style = "display: flex; flex-direction: column;";
     projForm.id = ("proj-form");
 
     const projInputLabel = document.createElement("label");
@@ -491,6 +495,7 @@ function createProjForm(event) {
     projInput.setAttribute("value", "");
 
     const projInputSubmit = document.createElement("button");
+    projInputSubmit.style = "align-self: end;";
     projInputSubmit.textContent = "Create";
     projInputSubmit.id = "proj-submit";
 
@@ -520,6 +525,13 @@ function projSubmit(event) {
   if (projList.hasChildNodes()) {
 
     index = projList.children.length;   
+
+    for (let i = 0; i < index; i++) {
+      if (project.getTodos()[i].getIndex() == index) {
+
+      index = todoList.children.length + 1;
+        
+      }
   }
 
   const newProj = createNewProject(projInput.value, index);
@@ -530,6 +542,8 @@ function projSubmit(event) {
   projForm.remove();
 
   addProjButton();
+
+  populateTodoList(newProj);
 
 
 }
@@ -663,7 +677,7 @@ function todoSubmit(event) {
 function deleteProject (event) {
 
   const key = event.target.value;
-  localStorage.removeItemByIndex(key);
+  localStorage.removeItem(key);
 
   event.target.parentNode.remove();
   setTodoList();

@@ -8,6 +8,13 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  module: {
+    rules: [
+      {
+        test: /\.(svg)$i,
+        type: 'asset/resource',
+    ],
+  },
   devtool: 'inline-source-map',
   plugins: [
     new  HtmlWebpackPlugin( {

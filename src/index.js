@@ -27,11 +27,11 @@ const fill = function fillDefault() {
 }
 
 
-document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100vh/ 1fr 3fr; font-size: 28px; background-color: whitesmoke"
+document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100vh/ 1fr 3fr; font-size: 28px; background-color: whitesmoke; font-family: Verdana, sans-serif; display: flex; align-content: center; justify-content: center;"
 
 const projContainer = document.createElement("div");
 projContainer.id = "proj-container";
-projContainer.style = "padding-left: 35px;";
+projContainer.style = "padding-left: 35px; display: flex; flex-direction: column;";
 
 const todoContainer = document.createElement("div");
 todoContainer.id = "todo-container";
@@ -56,6 +56,7 @@ addProjButton();
 
 const projHeader = document.createElement("h2");
 projHeader.textContent = "Projects"
+projHeader.style = "font-size: 1.7rem;";
 projDiv.appendChild(projHeader);
 
 // Add default.
