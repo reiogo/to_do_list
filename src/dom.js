@@ -28,7 +28,8 @@ export function addTodoButton() {
 
   const addTodoButton = document.createElement("button");
   addTodoButton.id = "todo-button";
-  addTodoButton.textContent = "Add Todo";
+  addTodoButton.textContent = "+";
+  addTodoButton.style = "appearance: none; border: none; font-size: 2rem; align-self: end; background-color: antiquewhite";
 
   todoContainer.appendChild(addTodoButton);
 
@@ -44,7 +45,7 @@ export function addProjButton() {
   const addProjButton = document.createElement("button");
   addProjButton.id = "proj-button";
   addProjButton.textContent = "+";
-  addProjButton.style = "appearance: none; border: none; font-size: 2rem; align-self: end;";
+  addProjButton.style = "appearance: none; border: none; font-size: 2rem; align-self: end; background-color: antiquewhite";
 
   projContainer.appendChild(addProjButton);
 
@@ -80,7 +81,7 @@ export function populateProjects (listOfProjects) {
       listOfProjects[i].getTitle();
 
     projButton.style =
-      "border: none; font-size: 1.3rem;";
+      "border: none; font-size: 1.3rem; background-color: antiquewhite";
     projButton.class = "project-expand";
 
     const key = listOfProjects[i].getTitle();
@@ -138,7 +139,7 @@ export function populateTodoList (project) {
     if(project.indexExists(i)) {
 
       const listItem = document.createElement("li");
-      listItem.style = "list-style-type: none; display: flex;";
+      listItem.style = "list-style-type: none; display: flex; align-items: center;";
 
       makeTodoItemTitle(project.getTodoByIndex(i), listItem);
 
@@ -218,7 +219,7 @@ function makeTodoItemCard (todoItem, currentListItem) {
   const todoCardTitle = document.createElement("p");
   todoCardTitle.textContent = item.title;
   todoCardTitle.class = "todo-element";
-  todoCardTitle.style = `background-color: ${color};`
+  todoCardTitle.style = `background-color: ${color}; font-size: 1.8rem;`;
 
 
   // Date
@@ -235,15 +236,9 @@ function makeTodoItemCard (todoItem, currentListItem) {
     `Due: ${format(dateValue, 'E dd/MM/yyyy')}`;
   date.class = "date-on-card";
   date.id = `date-${todoItem.getIndex()}`;
+  date.style = "font-size: 1.5rem;";
 
 
-  const todoCardPriority = document.createElement("p");
-  todoCardPriority.textContent = item.priority;
-  todoCardPriority.class = "todo-element";
-
-  const todoCardComplete = document.createElement("p");
-  todoCardComplete.textContent = item.complete;
-  todoCardComplete.class = "todo-element";
 
   currentListItem.appendChild(todoDeleter);
   currentListItem.appendChild(todoCard);
@@ -517,8 +512,18 @@ function createProjForm(event) {
 function projSubmit(event) {
   
   event.preventDefault();
-  const projInput = document.querySelector("#proj-input");
+  const projInput = document.querySelector("#proj-input").value;
   const projList = document.querySelector("#proj-list");
+  const projForm = document.querySelector("#proj-form");
+
+  if(projInput == "") {
+
+    addProjButton();
+    projForm.remove();
+    return;
+    
+  }
+  
 
   let index = 0;
   const storageProjects = getAllProjectsFromStorage();
@@ -537,11 +542,10 @@ function projSubmit(event) {
     }
   }
 
-  const newProj = createNewProject(projInput.value, index);
+  const newProj = createNewProject(projInput, index);
 
   populateProjects(getAllProjectsFromStorage());
 
-  const projForm = document.querySelector("#proj-form");
   projForm.remove();
 
   addProjButton();
@@ -637,7 +641,11 @@ function todoSubmit(event) {
 
   const title = document.querySelector("#title-input").value;
 
+  const todoForm = document.querySelector("#todo-form");
+
   if (title == "") {
+    todoForm.remove();
+    addTodoButton();
     return;
   }
   
@@ -669,7 +677,6 @@ function todoSubmit(event) {
   project.addToItems(newTodo);
   populateTodoList(project);
 
-  const todoForm = document.querySelector("#todo-form");
   todoForm.remove();
 
   addTodoButton();

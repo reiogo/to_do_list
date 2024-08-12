@@ -19,7 +19,7 @@ const fill = function fillDefault() {
   const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", date, "Tomato", "false", "1");
   const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", date, "Tomato", "false", "1");
   const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
-  const defaultProj2 = new Project("Default Project2",[defaultTodo, defaultTodo3], 1);
+  const defaultProj2 = new Project("Default Project2",[defaultTodo3], 1);
 
   addToStorage(defaultProj);
   addToStorage(defaultProj2);
@@ -27,7 +27,7 @@ const fill = function fillDefault() {
 }
 
 
-document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100vh/ 1fr 3fr; font-size: 28px; background-color: whitesmoke; font-family: Verdana, sans-serif; display: flex; align-content: center; justify-content: center;"
+document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100vh/ 1fr 3fr; font-size: 28px; background-color: antiquewhite; font-family: Verdana, sans-serif; display: flex; align-content: center; justify-content: center;"
 
 const projContainer = document.createElement("div");
 projContainer.id = "proj-container";
@@ -35,7 +35,7 @@ projContainer.style = "padding-left: 35px; display: flex; flex-direction: column
 
 const todoContainer = document.createElement("div");
 todoContainer.id = "todo-container";
-todoContainer.style = "padding-left: 35px;";
+todoContainer.style = "padding-left: 35px; display: flex; flex-direction: column;";
 
 document.body.appendChild(projContainer);
 document.body.appendChild(todoContainer);
@@ -60,7 +60,7 @@ projHeader.style = "font-size: 1.7rem;";
 projDiv.appendChild(projHeader);
 
 // Add default.
-if (localStorage.length == 1 && localStorage.getItem("debug") != null) {
+if ((localStorage.length == 1 && localStorage.getItem("debug") != null) || localStorage.length == 0) {
 
   fill();
   
