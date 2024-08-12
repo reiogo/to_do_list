@@ -521,17 +521,20 @@ function projSubmit(event) {
   const projList = document.querySelector("#proj-list");
 
   let index = 0;
+  const storageProjects = getAllProjectsFromStorage();
 
   if (projList.hasChildNodes()) {
 
     index = projList.children.length;   
 
-    for (let i = 0; i < index; i++) {
-      if (project.getTodos()[i].getIndex() == index) {
+    for (let i = 0; i < storageProjects.length; i++) {
 
-      index = todoList.children.length + 1;
+      if (storageProjects[i].getIndex() == index) {
+
+        index += 1;
         
       }
+    }
   }
 
   const newProj = createNewProject(projInput.value, index);

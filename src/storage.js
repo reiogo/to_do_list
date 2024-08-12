@@ -57,21 +57,32 @@ export function getAllProjectsFromStorage () {
   
   let returnArray = [];
 
-  for (let i = 0; i < localStorage.length; i++) {
+  let i = 0;
+  let loopbreaker = 0;
+  while(returnArray.length != localStorage.length) {
 
-    for(let [key, value] of Object.entries(localStorage))  {
+      for(let [key, value] of Object.entries(localStorage))  {
 
-      const item = (JSON.parse(value));
+        const item = JSON.parse(value);
 
-      if(item.index == i) {
+        if(item.index == i) {
 
-        const project = getProjectFromStorage(key);
-        returnArray.push(project);
+          const project = getProjectFromStorage(key);
+          returnArray.push(project);
 
-        break;
+          break;
       }
     }
+
+    i++;
+
+    loopbreaker++
+    if (loopbreaker > 2000) {
+      alert("Admin Error");
+      break;
+    }
   }
+  
 
     return returnArray;
   

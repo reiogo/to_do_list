@@ -11,8 +11,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(svg)$i,
+        test: /\.(svg)$/i,
         type: 'asset/resource',
+      },
     ],
   },
   devtool: 'inline-source-map',
@@ -21,7 +22,7 @@ module.exports = {
       template: './src/index.html',
       filename: 'index.html',
       inject: 'body',
-    }),
-  ],
+      }),
+    ],
 };
 
