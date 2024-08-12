@@ -16,10 +16,10 @@ const fill = function fillDefault() {
 
   const date = new Date();
   const defaultTodo = new Todo("Example Todo Item", "Example Description", date, "Tomato", "false", "0");
-  const defaultTodo2 =new Todo("Example 2 Todo Item", "Example Description", date, "Tomato", "false", "1");
+  const defaultTodo2 =new Todo("Click the circle to delete the item", "Example Description", date, "Tomato", "false", "1");
   const defaultTodo3 =new Todo("Example 3 Todo Item", "Example Description", date, "Tomato", "false", "1");
   const defaultProj = new Project("Default Project",[defaultTodo, defaultTodo2], 0);
-  const defaultProj2 = new Project("Default Project2",[defaultTodo3], 1);
+  const defaultProj2 = new Project("Click the square to delete the Project",[defaultTodo3], 1);
 
   addToStorage(defaultProj);
   addToStorage(defaultProj2);
@@ -31,11 +31,11 @@ document.body.style = "display: grid; padding: 0; margin: 0; grid-template: 100v
 
 const projContainer = document.createElement("div");
 projContainer.id = "proj-container";
-projContainer.style = "padding-left: 35px; display: flex; flex-direction: column;";
+projContainer.style = "padding-left: 35px; display: flex; flex-direction: column; width: min(300px, 100vh);";
 
 const todoContainer = document.createElement("div");
 todoContainer.id = "todo-container";
-todoContainer.style = "padding-left: 35px; display: flex; flex-direction: column;";
+todoContainer.style = "padding-left: 35px; display: flex; flex-direction: column; width: min(300px, 100vh);";
 
 document.body.appendChild(projContainer);
 document.body.appendChild(todoContainer);

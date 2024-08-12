@@ -30,7 +30,6 @@ export function addTodoButton() {
   addTodoButton.id = "todo-button";
   addTodoButton.textContent = "+";
   addTodoButton.style = "appearance: none; border: none; font-size: 2rem; align-self: end; background-color: antiquewhite";
-
   todoContainer.appendChild(addTodoButton);
 
   addTodoButton.addEventListener("click", createTodoForm);
@@ -71,6 +70,7 @@ export function populateProjects (listOfProjects) {
   for (let i = 0; i < listOfProjects.length; i++) {
 
     const projListItem = document.createElement("li");
+    projListItem.style = "display: flex; align-items: center; justify-content: center;";
     const projDeleter = document.createElement("button");
     projDeleter.style = "height: 1rem; margin: 4px;";
     projDeleter.class = "proj-deleter";
@@ -81,7 +81,7 @@ export function populateProjects (listOfProjects) {
       listOfProjects[i].getTitle();
 
     projButton.style =
-      "border: none; font-size: 1.3rem; background-color: antiquewhite";
+      "display: flex; border: none; font-size: 1.3rem; background-color: antiquewhite; overflow-wrap: break-word; inline-size: 150px;";
     projButton.class = "project-expand";
 
     const key = listOfProjects[i].getTitle();
@@ -139,7 +139,7 @@ export function populateTodoList (project) {
     if(project.indexExists(i)) {
 
       const listItem = document.createElement("li");
-      listItem.style = "list-style-type: none; display: flex; align-items: center;";
+      listItem.style = "justify-content: center; list-style-type: none; display: flex; align-items: center;";
 
       makeTodoItemTitle(project.getTodoByIndex(i), listItem);
 
@@ -182,7 +182,7 @@ function makeTodoItemTitle (todoItem, currentListItem) {
   
 
   const todoDeleter = document.createElement("button");
-  todoDeleter.style = "height: 1rem; margin: 4px; border-radius: 50%;";
+  todoDeleter.style = "appearance: none; height: 1rem; margin: 4px; border-radius: 50%; border: 1px solid gray;";
   todoDeleter.class = "todo-deleter";
   todoDeleter.value = index;
   const todoButton = document.createElement("button");
@@ -191,7 +191,7 @@ function makeTodoItemTitle (todoItem, currentListItem) {
   todoButton.id = index; 
   todoButton.class = "todo-item-title"; 
   todoButton.style =
-    `border: none; font-size: 1.5rem; background-color: ${todoItem.getColor()}`;
+    `border: none; font-size: 1.5rem; background-color: ${todoItem.getColor()}; overflow-wrap: break-word; inline-size: 150px;`;
 
   currentListItem.appendChild(todoDeleter);
   currentListItem.appendChild(todoButton);
@@ -211,6 +211,7 @@ function makeTodoItemCard (todoItem, currentListItem) {
   const todoCard = document.createElement("div");
   todoCard.class = "todo-card";
   todoCard.id = index;
+  todoCard.style = "background-color: darkkhaki; box-shadow: 5px 5px 5px 12px bisque; margin: 18px; padding: 2px 15px;";
 
   const color = todoItem.getColor();
 
@@ -236,7 +237,7 @@ function makeTodoItemCard (todoItem, currentListItem) {
     `Due: ${format(dateValue, 'E dd/MM/yyyy')}`;
   date.class = "date-on-card";
   date.id = `date-${todoItem.getIndex()}`;
-  date.style = "font-size: 1.5rem;";
+  date.style = "font-size: 1.5rem; padding-left: 18px;";
 
 
 
@@ -282,6 +283,7 @@ const setDesc = function submitEditsToDescOnButtonClick(event) {
   desc.textContent = newDesc;
   desc.id = `desc-${todoIndex}`;
   desc.class = "desc";
+  desc.style = "font-size: 1.5rem; padding-left: 18px;";
 
   const date = document.querySelector(`#date-${todoIndex}`);
   card.insertBefore(desc, date);
@@ -353,6 +355,7 @@ const createEdit = function createButtonForEditingOnClick(event) {
   editButton.id = `edit-button-${todoIndex}`;
   editButton.class = "already-exists"
   editButton.textContent = "Edit Description"
+  editButton.style = "margin-left: 18px;";
   
   const date = document.querySelector(`#date-${todoIndex}`);
   card.insertBefore(editButton, date);
@@ -372,7 +375,7 @@ const addDescription = function descriptionOptions(todoItem, todoCard) {
     const addDescButton = document.createElement("button");
 
     addDescButton.textContent = "Add Description";
-    addDescButton.style = "font-size: .8rem;";
+    addDescButton.style = "font-size: .8rem; margin-left: 18px;";
     addDescButton.class = "new-desc";
 
     const date = document.querySelector(`#date-${todoIndex}`);
@@ -385,6 +388,7 @@ const addDescription = function descriptionOptions(todoItem, todoCard) {
     const desc = document.createElement("p");
     desc.textContent = todoItem.getDesc()
     desc.id = `desc-${todoItem.getIndex()}`;
+    desc.style = "font-size: 1.5rem; padding-left: 18px";
     desc.class = "desc";
 
     todoCard.appendChild(desc);
@@ -562,6 +566,7 @@ function createTodoForm(event) {
 
     const todoForm = document.createElement("form");
     todoForm.id = ("todo-form");
+    todoForm.style = "display: grid; grid-template: 1fr/ 1fr 3fr";
 
     // Title
     const titleLabel = document.createElement("label");
@@ -572,11 +577,13 @@ function createTodoForm(event) {
     title.setAttribute("type", "text");
     title.setAttribute("placeholder", "New Todo");
     title.setAttribute("value", "");
+    title.style = "grid-column: 1/3;";
 
     // Priority
     const greenPriorityLabel = document.createElement("label");
     greenPriorityLabel.setAttribute("for", "green");
-    greenPriorityLabel.textContent = "Low";
+    greenPriorityLabel.textContent = "Low priority";
+    greenPriorityLabel.style = "font-size: 1.5rem;";
 
     const greenPriority = document.createElement("input");
     greenPriority.setAttribute("type", "radio");
@@ -585,10 +592,12 @@ function createTodoForm(event) {
     greenPriority.name = "priority_level";
     greenPriority.id = "green";
     greenPriority.value = "yellowgreen";
+    greenPriority.style = "align-self: center; justify-self: end; margin-right: 10px;";
 
     const yellowPriorityLabel = document.createElement("label");
     yellowPriorityLabel.setAttribute("for", "yellow");
     yellowPriorityLabel.textContent = "Medium";
+    yellowPriorityLabel.style = "font-size: 1.5rem;";
 
     const yellowPriority = document.createElement("input");
     yellowPriority.setAttribute("type", "radio");
@@ -596,10 +605,12 @@ function createTodoForm(event) {
     yellowPriority.name = "priority_level";
     yellowPriority.id = "yellow";
     yellowPriority.value = "#fcf22d ";
+    yellowPriority.style = "align-self: center; justify-self: end; margin-right: 10px;";
 
     const redPriorityLabel = document.createElement("label");
     redPriorityLabel.setAttribute("for", "red");
     redPriorityLabel.textContent = "High";
+    redPriorityLabel.style = "font-size: 1.5rem;";
 
     const redPriority = document.createElement("input");
     redPriority.setAttribute("type", "radio");
@@ -607,11 +618,13 @@ function createTodoForm(event) {
     redPriority.name = "priority_level";
     redPriority.id = "red";
     redPriority.value = "Tomato";
+    redPriority.style = "align-self: center; justify-self: end; margin-right: 10px;";
 
 
     const todoInputSubmit = document.createElement("button");
     todoInputSubmit.textContent = "Create";
     todoInputSubmit.id = "todo-submit";
+    todoInputSubmit.style = "grid-column: 2/3; justify-self: end;";
 
     todoForm.appendChild(titleLabel);
     todoForm.appendChild(title);
