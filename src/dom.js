@@ -70,7 +70,7 @@ export function populateProjects (listOfProjects) {
   for (let i = 0; i < listOfProjects.length; i++) {
 
     const projListItem = document.createElement("li");
-    projListItem.style = "display: flex; align-items: center; justify-content: center;";
+    projListItem.style = "margin: 26px; display: flex; align-items: center; justify-content: center;";
     const projDeleter = document.createElement("button");
     projDeleter.style = "height: 1rem; margin: 4px;";
     projDeleter.class = "proj-deleter";
@@ -81,7 +81,7 @@ export function populateProjects (listOfProjects) {
       listOfProjects[i].getTitle();
 
     projButton.style =
-      "display: flex; border: none; font-size: 1.3rem; background-color: antiquewhite; overflow-wrap: break-word; inline-size: 150px;";
+      "justify-content: center; display: flex; border: none; font-size: 1.3rem; background-color: antiquewhite; overflow-wrap: break-word; inline-size: 250px;";
     projButton.class = "project-expand";
 
     const key = listOfProjects[i].getTitle();
@@ -139,7 +139,7 @@ export function populateTodoList (project) {
     if(project.indexExists(i)) {
 
       const listItem = document.createElement("li");
-      listItem.style = "justify-content: center; list-style-type: none; display: flex; align-items: center;";
+      listItem.style = "margin: 26px; justify-content: center; list-style-type: none; display: flex; align-items: center;";
 
       makeTodoItemTitle(project.getTodoByIndex(i), listItem);
 
@@ -191,7 +191,7 @@ function makeTodoItemTitle (todoItem, currentListItem) {
   todoButton.id = index; 
   todoButton.class = "todo-item-title"; 
   todoButton.style =
-    `border: none; font-size: 1.5rem; background-color: ${todoItem.getColor()}; overflow-wrap: break-word; inline-size: 150px;`;
+    `border: none; font-size: 1.5rem; background-color: ${todoItem.getColor()}; overflow-wrap: break-word; inline-size: 250px;`;
 
   currentListItem.appendChild(todoDeleter);
   currentListItem.appendChild(todoButton);
@@ -283,7 +283,7 @@ const setDesc = function submitEditsToDescOnButtonClick(event) {
   desc.textContent = newDesc;
   desc.id = `desc-${todoIndex}`;
   desc.class = "desc";
-  desc.style = "font-size: 1.5rem; padding-left: 18px;";
+  desc.style = "inline-size: 250px; overflow-wrap: break-word; font-size: 1.5rem; padding-left: 18px;";
 
   const date = document.querySelector(`#date-${todoIndex}`);
   card.insertBefore(desc, date);

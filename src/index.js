@@ -35,7 +35,7 @@ projContainer.style = "padding-left: 35px; display: flex; flex-direction: column
 
 const todoContainer = document.createElement("div");
 todoContainer.id = "todo-container";
-todoContainer.style = "padding-left: 35px; display: flex; flex-direction: column; width: min(300px, 100vh);";
+todoContainer.style = "padding-left: 35px; display: flex; flex-direction: column; width: min(500px, 100vh);";
 
 document.body.appendChild(projContainer);
 document.body.appendChild(todoContainer);
